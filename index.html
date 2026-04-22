@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farenhyt IFP + HFSS Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--red:#e63030;--rdk:#b01e1e;--amb:#f5a623;--bg:#0e0e10;--sf:#17171a;--s2:#1f1f24;--br:#2e2e36;--tx:#e8e8ec;--mu:#8888a0;--gn:#3dd68c;--bl:#4e9eff;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--tx);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;}
+header{background:var(--sf);border-bottom:3px solid var(--red);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;min-height:70px;gap:12px;flex-wrap:wrap;}
+.logo{display:flex;align-items:center;gap:14px;}
+.logo-icon{width:40px;height:40px;background:var(--red);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.logo h1{font-family:'Bebas Neue',sans-serif;font-size:1.55rem;letter-spacing:2px;}
+.logo span{font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:var(--mu);letter-spacing:1px;display:block;}
+.hdr-r{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.badge{background:var(--red);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:0.62rem;padding:4px 10px;border-radius:4px;letter-spacing:1px;}
+.stbtn{background:var(--s2);border:1px solid var(--br);color:var(--tx);font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:1px;padding:8px 16px;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:border-color .2s;}
+.stbtn:hover{border-color:var(--amb);color:var(--amb);}
+.stbtn kbd{background:var(--br);border-radius:3px;padding:1px 5px;font-size:0.65rem;}
+.tabs{display:flex;padding:0 2rem;background:var(--sf);border-bottom:1px solid var(--br);overflow-x:auto;}
+.tab-btn{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:1.5px;text-transform:uppercase;padding:15px 20px;border:none;background:none;color:var(--mu);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
+.tab-btn:hover{color:var(--tx);}
+.tab-btn.active{color:var(--red);border-bottom-color:var(--red);}
+.tab-btn.hf.active{color:var(--bl);border-bottom-color:var(--bl);}
+.tc{display:none;padding:2rem;max-width:1100px;margin:0 auto;}
+.tc.active{display:block;}
+.sh{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:3px;color:var(--red);margin-bottom:.3rem;}
+.sh.bl{color:var(--bl);}
+.ss{font-size:0.78rem;color:var(--mu);font-family:'IBM Plex Mono',monospace;margin-bottom:2rem;letter-spacing:1px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1.2rem;}
+.kc{background:var(--sf);border:1px solid var(--br);border-radius:8px;overflow:hidden;transition:transform .2s,border-color .2s;}
+.kc:hover{transform:translateY(-2px);border-color:var(--red);}
+.kc.h:hover{border-color:var(--bl);}
+.kh{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--s2);border-bottom:1px solid var(--br);}
+.ki{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.kt{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--amb);}
+.kt.b{color:var(--bl);}
+.kb{padding:13px 16px;}
+.kb ul{list-style:none;}
+.kb li{font-size:0.84rem;line-height:1.75;padding:2px 0 2px 14px;position:relative;}
+.kb li::before{content:'›';position:absolute;left:0;color:var(--red);font-weight:700;}
+.hi{font-family:'IBM Plex Mono',monospace;font-size:0.76rem;background:rgba(230,48,48,.12);color:var(--amb);padding:2px 6px;border-radius:4px;border-left:2px solid var(--red);display:block;margin:3px 0;}
+.hi.b{background:rgba(78,158,255,.1);color:var(--bl);border-left-color:var(--bl);}
+.pbr{height:4px;background:var(--br);border-radius:2px;max-width:700px;margin:0 auto 2rem;overflow:hidden;}
+.pf{height:100%;background:var(--red);border-radius:2px;transition:width .3s;}
+.fca{perspective:1200px;min-height:260px;max-width:700px;margin:0 auto 2rem;}
+.fcc{width:100%;min-height:260px;position:relative;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1);cursor:pointer;}
+.fcc.fl{transform:rotateY(180deg);}
+.cff{position:absolute;inset:0;background:var(--sf);border:2px solid var(--br);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+.cfb{transform:rotateY(180deg);border-color:var(--red);background:var(--s2);}
+.cl{font-family:'IBM Plex Mono',monospace;font-size:0.63rem;letter-spacing:2px;text-transform:uppercase;color:var(--mu);margin-bottom:1rem;}
+.cq{font-size:1.05rem;font-weight:600;text-align:center;line-height:1.55;}
+.ca{font-size:0.88rem;text-align:center;line-height:1.75;}
+.cs{font-family:'IBM Plex Mono',monospace;font-size:0.6rem;padding:2px 7px;border-radius:10px;position:absolute;top:14px;right:14px;letter-spacing:1px;}
+.csi{background:rgba(230,48,48,.15);color:var(--red);}
+.csh{background:rgba(78,158,255,.15);color:var(--bl);}
+.fn{display:flex;justify-content:center;align-items:center;gap:1.5rem;margin-bottom:1.5rem;}
+.fct{font-family:'IBM Plex Mono',monospace;font-size:0.8rem;color:var(--mu);}
+.btn{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:1px;padding:9px 18px;border-radius:6px;border:none;cursor:pointer;transition:all .15s;text-transform:uppercase;}
+.bp{background:var(--red);color:#fff;}.bp:hover{background:var(--rdk);}
+.bo{background:none;border:1px solid var(--br);color:var(--tx);}.bo:hover{border-color:var(--red);color:var(--red);}
+.qi{background:var(--sf);border:1px solid var(--br);border-left:4px solid var(--amb);border-radius:8px;padding:14px 18px;margin-bottom:2rem;font-size:0.84rem;color:var(--mu);line-height:1.7;}
+.qcard{background:var(--sf);border:1px solid var(--br);border-radius:10px;margin-bottom:1.5rem;overflow:hidden;}
+.qhd{display:flex;align-items:flex-start;gap:12px;padding:16px 18px;border-bottom:1px solid var(--br);}
+.qnum{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--red);flex-shrink:0;line-height:1;margin-top:2px;}
+.qtxt{font-size:0.93rem;font-weight:600;line-height:1.5;flex:1;}
+.qtags{display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
+.qdf,.qst{font-family:'IBM Plex Mono',monospace;font-size:0.62rem;padding:3px 7px;border-radius:4px;letter-spacing:1px;}
+.de{background:rgba(61,214,140,.15);color:var(--gn);}
+.dm{background:rgba(245,166,35,.15);color:var(--amb);}
+.dh{background:rgba(230,48,48,.15);color:var(--red);}
+.sti{background:rgba(230,48,48,.12);color:var(--red);}
+.sth{background:rgba(78,158,255,.12);color:var(--bl);}
+.optl{padding:10px 18px;list-style:none;display:flex;flex-direction:column;gap:5px;}
+.opt{font-size:0.86rem;padding:9px 13px;border-radius:6px;border:1px solid var(--br);cursor:pointer;transition:all .15s;display:flex;gap:10px;align-items:flex-start;line-height:1.5;}
+.opt:hover{border-color:var(--mu);background:var(--s2);}
+.opt.cor{background:rgba(61,214,140,.12);border-color:var(--gn);color:var(--gn);}
+.opt.wrg{background:rgba(230,48,48,.12);border-color:var(--red);color:var(--red);opacity:.7;}
+.optltr{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;font-weight:600;width:20px;flex-shrink:0;margin-top:1px;}
+.expl{display:none;margin:0 18px 14px;padding:11px 13px;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:6px;font-size:0.82rem;line-height:1.7;color:var(--mu);}
+.expl.vis{display:block;}.expl strong{color:var(--gn);}
+.scbar{background:var(--sf);border:1px solid var(--br);border-radius:10px;padding:18px;margin-bottom:2rem;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.scnum{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--amb);line-height:1;}
+.sclbl{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--mu);letter-spacing:1px;text-transform:uppercase;}
+#sover{position:fixed;inset:0;z-index:999;display:none;align-items:flex-start;justify-content:center;padding-top:8vh;}
+#sover.open{display:flex;}
+.sbk{position:absolute;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);}
+.sbox{position:relative;z-index:1;background:var(--sf);border:1px solid var(--br);border-radius:12px;width:min(760px,94vw);max-height:78vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.6);}
+.shdr{padding:16px 20px;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:12px;}
+.sico{color:var(--amb);font-size:1.1rem;flex-shrink:0;}
+#sinp{flex:1;background:none;border:none;outline:none;font-family:'IBM Plex Mono',monospace;font-size:1rem;color:var(--tx);letter-spacing:.5px;}
+#sinp::placeholder{color:var(--mu);}
+.sclse{background:none;border:1px solid var(--br);color:var(--mu);font-family:'IBM Plex Mono',monospace;font-size:0.65rem;padding:4px 10px;border-radius:4px;cursor:pointer;letter-spacing:1px;}
+.sclse:hover{border-color:var(--red);color:var(--red);}
+.sres{overflow-y:auto;padding:12px;}
+.sempty{padding:2.5rem;text-align:center;color:var(--mu);font-family:'IBM Plex Mono',monospace;font-size:0.8rem;letter-spacing:1px;}
+.shint{padding:1.5rem 2rem;color:var(--mu);font-size:0.82rem;line-height:2.2;}
+.shint span{color:var(--amb);font-family:'IBM Plex Mono',monospace;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+.shint span:hover{color:var(--tx);}
+.rcard{border:1px solid var(--br);border-radius:8px;margin-bottom:8px;overflow:hidden;}
+.rtop{display:flex;align-items:center;gap:8px;padding:9px 13px;background:var(--s2);border-bottom:1px solid var(--br);}
+.rname{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:1px;text-transform:uppercase;color:var(--amb);}
+.rname.b{color:var(--bl);}
+.rtag{font-family:'IBM Plex Mono',monospace;font-size:0.58rem;padding:2px 6px;border-radius:3px;margin-left:auto;letter-spacing:1px;}
+.rbody{padding:10px 13px;}
+.rline{font-size:0.84rem;line-height:1.75;padding:2px 0 2px 13px;position:relative;}
+.rline::before{content:'›';position:absolute;left:0;color:var(--red);}
+.rline mark{background:rgba(245,166,35,.25);color:var(--amb);border-radius:2px;padding:0 2px;}
+.rcnt{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--mu);padding:8px 12px;letter-spacing:1px;border-top:1px solid var(--br);text-align:right;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--br);border-radius:3px;}
+@media(max-width:600px){.grid{grid-template-columns:1fr;}header{padding:12px;}.tabs{padding:0 1rem;}.tc{padding:1.2rem;}.stbtn kbd{display:none;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <div class="logo-icon">&#x1F525;</div>
+    <div><h1>Farenhyt IFP + HFSS</h1><span>SERIES BLACK &middot; IFP-2100 &middot; KEYPAD &amp; SOFTWARE</span></div>
+  </div>
+  <div class="hdr-r">
+    <button class="stbtn" onclick="openS()">&#x1F50D; Keyword Search <kbd>K</kbd></button>
+    <div class="badge">DAYS 1&ndash;2</div>
+  </div>
+</header>
+<div class="tabs">
+  <button class="tab-btn active" onclick="swTab('kn',this)">&#x1F4CB; IFP Keynotes</button>
+  <button class="tab-btn hf" onclick="swTab('hf',this)">&#x1F4BB; HFSS Keynotes</button>
+  <button class="tab-btn" onclick="swTab('fc',this)">&#x1F0CF; Flashcards</button>
+  <button class="tab-btn" onclick="swTab('tst',this)">&#x1F4DD; Practice Test</button>
+</div>
+
+<!-- IFP KEYNOTES -->
+<div id="kn" class="tc active">
+<div class="sh">IFP KEYPAD PROGRAMMING</div>
+<div class="ss">DAY 1 &mdash; SLIDES &middot; TRANSCRIPT &middot; SELF NOTES</div>
+<div class="grid">
+
+<div class="kc"><div class="kh"><div class="ki" style="background:rgba(230,48,48,.15)">&#9881;</div><div class="kt">Defaulting &mdash; Pre-V7</div></div><div class="kb"><ul>
+<li>Set panel ID via DIP switches &rarr; Power up</li>
+<li>Enter installer code <span class="hi">123456</span></li>
+<li><strong>Do NOT press Enter</strong> after code on pre-V7</li>
+<li>Navigate: <span class="hi">7 &rarr; Panel Programming &rarr; 7 &rarr; Restore Defaults</span></li>
+<li>Scroll to YES &rarr; Enter <strong>twice</strong> (confirm + save)</li>
+<li>Firmware stays the same &mdash; only program is wiped</li>
+</ul></div></div>
+
+<div class="kc"><div class="kh"><div class="ki" style="background:rgba(230,48,48,.15)">&#x1F510;</div><div class="kt">Defaulting &mdash; V7+</div></div><div class="kb"><ul>
+<li>Press <strong>Enter</strong> at main screen &rarr; Login Menu</li>
+<li>Select <strong>Admin 1</strong> &rarr; default code <span class="hi">0000000 (7 zeros)</span></li>
+<li><strong>Must press Enter</strong> after code on V7+</li>
+<li>Navigate: <span class="hi">4 &rarr; Restore Defaults &rarr; YES &rarr; Enter twice</span></li>
+<li>Firmware stays the same &mdash; only program is wiped</li>
+</ul></div></div>
+
+<div class="kc"><div class="kh"><div class="ki" style="background:rgba(245,166,35,.15)">&#x1F511;</div><div class="kt">Password Requirements (V7+)</div></div><div class="kb"><ul>
+<li>Admin 1 code must be <strong>exactly 7 digits</strong></li>
+<li>Cannot be same digit 7 times (e.g. 0000000)</li>
+<li>Cannot be sequential (1234567 or 7654321)</li>
+<li>Recommended: model # with leading zeros <span class="hi">0002100 or 0000300</span></li>
+<li>V7.00.12+: Admin 1 change can update all 4 codes at once</li>
+<li><strong>Always write codes down</strong> &mdash; no backdoor on Series Black</li>
+</ul></div></div>
+
+<div class="kc"><div class="kh"><div class="ki" style="background:rgba(245,166,35,.15)">&#x26A0;</div><div class="kt">Lost Password Recovery</div></div><div class="kb"><ul>
+<li>10 incorrect attempts &rarr; 30-second lockout</li>
+<li>11th failure &rarr; <strong>encrypted 20-char hex string</strong> displayed</li>
+<li>Contact Technical Support with the hex string</li>
+<li>Requires <strong>Password Agreement</strong> &mdash; signed &amp; notarized by panel owner or manager (not tech/dealer)</li>
+<li>Process can take 1&ndash;3 days</li>
+</ul></div></div>
+
+<div class="kc"><div class="kh"><div class="ki" style="background:rgba(61,214,140,.15)">&#x26A1;</div><div class="kt">JumpStart</div></div><div class="kb"><ul>
+<li>Scans all SLC devices &amp; assigns types automatically</li>
+<li><strong>Incremental</strong>: builds on existing programming &mdash; does NOT erase</li>
+<li>Removes devices no longer on SLC; keeps existing config</li>
+<li>Monitor Modules default to <strong>Manual Pull</strong> &mdash; change manually</li>
+<li>All inputs assigned to <strong>Zone 1</strong> by default</li>
+<li>Must select SLC protocol on launch &mdash; <strong>1 protocol per panel</strong></li>
+<li>Only accessible through <strong>annunciator</strong> (not HFSS)</li>
+<li>Already-assigned types won&#39;t be overwritten</li>
+</ul></div></div>
+
+<div class="kc"><div class="kh"><div class="ki" style="background:rgba(61,214,140,.15)">&#x1F4E6;</div><div class="kt">JumpStart Default Groups</div></div><div class="kb"><ul>
+<li><span class="hi">Group 1</span> &mdash; all outputs (NACs, SLC relays, LEDs)</li>
+<li><span class="hi">Group 998</span> &mdash; Onboard Relay 1 (Supervisory)</li>
+<li><span class="hi">Group 999</span> &mdash; Onboard Relay 2 (Alarm)</li>
+<li>Groups 997&ndash;999: do NOT add other devices here</li>
+<li>Max <strong>999 output groups</strong> on IFP-2100</li>
+</ul></div></div>
+
+<div class="kc"><div class="kh"><div class="ki" style="background:rgba(100,100,230,.2)">&#x1F522;</div><div class="kt">Point ID Format</div></div><div class="kb"><ul>
+<li>Format: <span class="hi">MM : S/M/P NNN</span></li>
+<li>Fixed IDs: 94=NVCM &middot; 95=SKNICK &middot; <strong>97=Internal SLC</strong> &middot; <strong>98=Internal PSU</strong> &middot; <strong>99=Onboard Annunciator</strong></li>
+<li><strong>S</strong>=Sensor | <strong>M</strong>=Module (IDP/SK) | <strong>P</strong>=Point (SD only)</li>
+<li><strong>NNN</strong> = 3-digit zero-filled address</li>
+<li>I/O circuits: no letter &mdash; just the number <span class="hi">98:001</span></li>
+</ul></div></div>
+
+<div class="kc"><div class="kh"><div class="ki" style="background:rgba(100,100,230,.2)">&#x1F5C2;</div><div class="kt">Inputs: Points vs Zones</div></div><div class="kb"><ul>
+<li><strong>Input Point</strong> = single addressable device</li>
+<li><strong>Input Zone</strong> = logical group of input points</li>
+<li>Every point MUST be in <strong>exactly 1 zone</strong></li>
+<li>Multiple points can share the same zone</li>
+<li>Max 999 zones; &#34;Unused&#34; = available address</li>
+<li>13 zone event types (alarms, supervisory, CO, water flow, Sonox 1 &amp; 2&hellip;)</li>
+</ul></div></div>
+
+<div class="kc"><div class="kh"><div class="ki" style="background:rgba(230,100,48,.2)">&#x1F4E2;</div><div class="kt">Outputs: Points vs Groups</div></div><div class="kb"><ul>
+<li><strong>Output Point</strong> = single circuit or relay</li>
+<li><strong>Output Group</strong> = collection responding the same way</li>
+<li>Each output point belongs to <strong>exactly 1 group</strong></li>
+<li><strong>NEVER mix NACs and relays</strong> &mdash; different patterns required</li>
+<li>Only <strong>1 output pattern per group</strong></li>
+<li>Pattern 00=Constant | Pattern 19=System Sensor Sync</li>
+</ul></div></div>
+
+<div class="kc"><div class="kh"><div class="ki" style="background:rgba(61,100,214,.2)">&#x1F5FA;</div><div class="kt">Mapping</div></div><div class="kb"><ul>
+<li>Links input zones &rarr; output groups (action / reaction)</li>
+<li>Any number of zones can map to 1 output group</li>
+<li>1 zone can map to any number of output groups</li>
+<li><strong>CANNOT be done through annunciator &mdash; HFSS only</strong></li>
+<li>Always pull program down after changes (Get Config)</li>
+</ul></div></div>
+
+<div class="kc"><div class="kh"><div class="ki" style="background:rgba(245,166,35,.15)">&#x1F527;</div><div class="kt">Function Keys (Macros)</div></div><div class="kb"><ul>
+<li>Hold F-key &rarr; installer code &rarr; press <strong>1 to START</strong> recording</li>
+<li>Record any dis/enable of points, zones, or groups</li>
+<li>Hold same F-key &rarr; installer code &rarr; press <strong>1 to END</strong></li>
+<li>Toggle: press once=activate, press again=deactivate</li>
+<li><strong>Latch through resets</strong> &mdash; great for annual testing</li>
+<li>After recording: <strong>Get Configuration in HFSS</strong> to save macro digitally</li>
+<li>Default: only Installer profile can activate F-keys</li>
+</ul></div></div>
+
+<div class="kc"><div class="kh"><div class="ki" style="background:rgba(61,214,140,.15)">&#x1F50D;</div><div class="kt">Built-in Troubleshooting Tools</div></div><div class="kb"><ul>
+<li><strong>SLC Device Locator</strong>: flashes LED on target &mdash; times out 10 min</li>
+<li><strong>Multiple Device Locator</strong>: up to 8 devices; both flash on double address</li>
+<li>System shuts down during locate &mdash; press Enter to accept</li>
+<li><strong>I/O Point Control</strong>: toggle outputs / trip inputs; no timer; must be enabled in profile</li>
+<li><strong>Point Status</strong>: NORMAL &middot; ALARM &middot; CAL MAINT &middot; CAL TRBLE</li>
+<li>Detectors sampled every 3 hours; CAL TRBLE = out of NFPA 72</li>
+</ul></div></div>
+
+</div></div>
+
+<!-- HFSS KEYNOTES -->
+<div id="hf" class="tc">
+<div class="sh bl">HFSS SOFTWARE</div>
+<div class="ss">DAY 2 (PARTIAL) &mdash; SLIDES &middot; TRANSCRIPT &middot; SELF NOTES</div>
+<div class="grid">
+
+<div class="kc h"><div class="kh"><div class="ki" style="background:rgba(78,158,255,.1)">&#x1F4BB;</div><div class="kt b">System Requirements</div></div><div class="kb"><ul>
+<li>64-bit Windows 10 or 11</li>
+<li>Must have at least one <strong>active USB port</strong></li>
+<li>New panels: USB only &mdash; no DB9/serial port</li>
+<li>USB 2.0 most stable; USB 3.0 may work on latest firmware</li>
+<li><strong>Only one program open at a time</strong> &mdash; best practice</li>
+<li>Company-blocked USB? Contact IT to enable</li>
+</ul></div></div>
+
+<div class="kc h"><div class="kh"><div class="ki" style="background:rgba(78,158,255,.1)">&#x1F4CB;</div><div class="kt b">HFSS Menus Overview</div></div><div class="kb"><ul>
+<li><strong>Help &rarr; About</strong>: build date, Tech Support #, software version</li>
+<li><strong>Help &rarr; Licensing</strong>: log in to CLSS to enable programming license</li>
+<li><strong>Window</strong>: cascade / tile multiple programs (still use one at a time)</li>
+<li><strong>Options &rarr; Communication</strong>: select USB (only option)</li>
+<li><strong>Options &rarr; File</strong>: set default save location</li>
+<li><strong>Options &rarr; Panel Password</strong>: change passwords via software (HFSS 8.0.21.10 + FW 7.00.16+)</li>
+<li><strong>View</strong>: show/hide Queue, Toolbar, Status Bar</li>
+</ul></div></div>
+
+<div class="kc h"><div class="kh"><div class="ki" style="background:rgba(78,158,255,.1)">&#x1F511;</div><div class="kt b">Changing Passwords via HFSS</div></div><div class="kb"><ul>
+<li>Requires HFSS <span class="hi b">V8.0.21.10 or higher</span></li>
+<li>Requires panel firmware <span class="hi b">V7.00.16 or higher</span></li>
+<li>Options &rarr; Panel Password &rarr; enter Admin 1 code (default 0000000)</li>
+<li>Click <strong>Get Panel Passwords</strong> &rarr; current passwords appear</li>
+<li>Change all 4, click <strong>Set Panel Passwords</strong></li>
+<li>Invalid passwords shown in red with popup explaining requirements</li>
+<li>Same 7-digit / no-repeat / non-sequential rules apply</li>
+</ul></div></div>
+
+<div class="kc h"><div class="kh"><div class="ki" style="background:rgba(78,158,255,.1)">&#x1F4E1;</div><div class="kt b">Status Bar &amp; Connection</div></div><div class="kb"><ul>
+<li>Status Bar: very bottom-right &mdash; real-time comm status</li>
+<li><strong>&#34;Waiting on USB port&#34;</strong> = panel detected, ready to communicate &#10003;</li>
+<li><strong>&#34;No panel detected on USB port&#34;</strong> = troubleshoot</li>
+<li>Queue (bottom-center): shows all comm events</li>
+<li>Successful Get Config: Status = <strong>Complete</strong> + progress <strong>100%</strong></li>
+<li><strong>&#34;Panel not ready&#34;</strong> = connection conditions not met</li>
+</ul></div></div>
+
+<div class="kc h"><div class="kh"><div class="ki" style="background:rgba(78,158,255,.1)">&#x2705;</div><div class="kt b">Panel Connection Requirements</div></div><div class="kb"><ul>
+<li>Panel must be at <strong>Normal or Trouble</strong> &mdash; main screen</li>
+<li>&#10060; Cannot connect during Fire Alarm</li>
+<li>&#10060; Cannot connect during Supervisory (active tampers = supervisory)</li>
+<li>&#10060; Cannot connect while in Keypad Programming menu</li>
+<li>&#10060; Cannot connect during SLC Initialization</li>
+<li><strong>SLC Short = only trouble that prevents connection</strong> on standalone</li>
+<li>Open circuits, missing points, double address = OK to connect</li>
+</ul></div></div>
+
+<div class="kc h"><div class="kh"><div class="ki" style="background:rgba(78,158,255,.1)">&#x1F6E0;</div><div class="kt b">USB Troubleshooting Steps</div></div><div class="kb"><ul>
+<li>Unplug and re-plug cable &middot; Try different USB port &middot; Try different cable</li>
+<li>Confirm Options &rarr; Communication is set to USB</li>
+<li>Try USB 2.0 port instead of 3.0</li>
+<li>Restart HFSS; try connecting before or after opening software</li>
+<li>Power cycle the panel and/or PC</li>
+<li>Make sure panel is <strong>powered on</strong> and at the main screen</li>
+<li>Running Notifier? Close <strong>NFN Gateway</strong> in Task Manager</li>
+<li>Expired CLSS license: still detects panel &mdash; only blocks Set Config</li>
+</ul></div></div>
+
+<div class="kc h"><div class="kh"><div class="ki" style="background:rgba(78,158,255,.1)">&#x1F4C1;</div><div class="kt b">File Menu &mdash; Get &amp; Set Config</div></div><div class="kb"><ul>
+<li><strong>Get Configuration</strong> = Upload (panel &rarr; computer)</li>
+<li><strong>Set Configuration</strong> = Download (computer &rarr; panel)</li>
+<li>New Configuration: blank file &mdash; panel only, no devices</li>
+<li>Get Event History / Get Detector Status: pull logs to PC</li>
+<li>Get Time / Set Time: sync panel clock to laptop</li>
+<li><strong>Report Header</strong>: company name, address, logo &mdash; export to Word/Excel/PDF</li>
+<li>Always name your files! Auto-name uses date/time and gets confusing</li>
+<li>Default Computer Access #: <span class="hi b">123456</span> | Computer Code: <span class="hi b">0</span></li>
+</ul></div></div>
+
+<div class="kc h"><div class="kh"><div class="ki" style="background:rgba(78,158,255,.1)">&#x1F333;</div><div class="kt b">Directory Tree &amp; Navigation</div></div><div class="kb"><ul>
+<li>Top-left panel shows programming tree; +/&ndash; to expand/collapse</li>
+<li>Right-click Site &rarr; Add Site, Add Panel, Delete Site, Rename Site</li>
+<li>Max <strong>32 sites</strong> total in one HFSS file</li>
+<li>Right-click Panel &rarr; Add Panel, Add SBUS Module, Delete, Rename, Change Panel ID</li>
+<li>Different Series Black models can be networked (2100, 300, 75)</li>
+<li><strong>Right-clicking is the primary way to interact</strong> &mdash; used constantly</li>
+</ul></div></div>
+
+<div class="kc h"><div class="kh"><div class="ki" style="background:rgba(78,158,255,.1)">&#x2699;</div><div class="kt b">Panel Parameters</div></div><div class="kb"><ul>
+<li>Custom Banner: up to <strong>40 chars</strong>, auto-centered, Normal mode only</li>
+<li>SLC Protocol: IDP, SK/SS, or SD &mdash; 1 per panel</li>
+<li>Water Flow Delay: 1&ndash;90 sec (global) &mdash; skip if device has built-in delay</li>
+<li>Alarm Verification Time: 1&ndash;250 sec</li>
+<li>Auto-Unsilence Time: 4 or 24 hrs &mdash; re-alerts if silenced but not fixed</li>
+<li>Detector Sensitivity: set day/night with auto-switch start times</li>
+<li>Sonox Names: custom label Zone Aux 1 &amp; 2 (up to 20 chars)</li>
+</ul></div></div>
+
+<div class="kc h"><div class="kh"><div class="ki" style="background:rgba(78,158,255,.1)">&#x1F4DE;</div><div class="kt b">Communications Menu</div></div><div class="kb"><ul>
+<li><strong>Line Prefix</strong>: dial-out prefix ONLY &mdash; NOT the phone number (max 9 digits)</li>
+<li>Phone Line Monitor: below 3V triggers phone line trouble</li>
+<li>Line Disabled: for local-only systems or non-phone communicators</li>
+<li>Dial Tone Detection Disabled: use with IP communicators (IP-DACT, etc.)</li>
+<li>DHCP Enabled: auto IP from network; uncheck for static IP</li>
+<li>AlarmNet supervision: every 5 min, 1 hr, 6 hr, or 24 hr</li>
+</ul></div></div>
+
+<div class="kc h"><div class="kh"><div class="ki" style="background:rgba(78,158,255,.1)">&#x1F4E5;</div><div class="kt b">Input Zones in HFSS</div></div><div class="kb"><ul>
+<li>Right-click to add, label (up to 25 chars), or modify zones</li>
+<li><strong>Always label zones</strong> &mdash; unlabeled programs are a nightmare</li>
+<li>Mapping check marks show which event types activate which outputs</li>
+<li>Remove check marks for event types not in the zone</li>
+<li>Elevator smoke example: isolate in own zone, map only recall relay to it</li>
+</ul></div></div>
+
+<div class="kc h"><div class="kh"><div class="ki" style="background:rgba(78,158,255,.1)">&#x1F4E4;</div><div class="kt b">Output Groups in HFSS</div></div><div class="kb"><ul>
+<li>Right-click group # &rarr; Add New Group (set start # and quantity)</li>
+<li>Group labels: up to <strong>25 characters</strong> &mdash; <strong>always label</strong></li>
+<li>Right-click point type &rarr; change circuit type (NAC A/B, Aux Power, dry contact)</li>
+<li>Right-click group column &rarr; assign point to different group</li>
+<li>Select multiple rows &rarr; assign to same group or Auto-Increment</li>
+<li>Export Points List &rarr; CSV for central station or inspector</li>
+</ul></div></div>
+
+<div class="kc h"><div class="kh"><div class="ki" style="background:rgba(78,158,255,.1)">&#x1F5C3;</div><div class="kt b">Templates</div></div><div class="kb"><ul>
+<li>Template = group of groups (&#34;mega group&#34;)</li>
+<li>Right-click in Template section &rarr; Add New Template</li>
+<li>Move groups to Selected using arrows</li>
+<li>Use to: map many groups at once OR disable with single F-key</li>
+<li>Activation Cadence in output groups ONLY applies when using templates</li>
+</ul></div></div>
+
+<div class="kc h"><div class="kh"><div class="ki" style="background:rgba(78,158,255,.1)">&#x1F5FA;</div><div class="kt b">Mapping in HFSS (3 Levels)</div></div><div class="kb"><ul>
+<li><strong>Zone Mapping</strong>: most common &mdash; detector/pull/water flow events per area</li>
+<li><strong>Panel Mapping</strong>: panel-level events (AC loss, battery) &mdash; mainly for LED annunciators</li>
+<li><strong>Site Mapping</strong>: ECS events, function key triggers, general alarm/supervisory</li>
+<li>Right-click zone &rarr; <strong>Select Groups to Map</strong> &rarr; move to Selected &rarr; OK</li>
+<li>Right-click zone &rarr; <strong>Remove Zone Mapping</strong> = <strong>NO UNDO</strong></li>
+<li>To add zone back: right-click existing zone &rarr; <strong>Show Zones to Map</strong></li>
+<li>Mapping is the most important part of Farenhyt programming</li>
+</ul></div></div>
+
+</div></div>
+
+<!-- FLASHCARDS -->
+<div id="fc" class="tc">
+<div class="sh">FLASHCARDS</div>
+<div class="ss">CLICK CARD TO FLIP &middot; &#x1F534; IFP &middot; &#x1F535; HFSS &middot; FILTER BY SECTION</div>
+<div class="pbr"><div class="pf" id="fprog" style="width:0%"></div></div>
+<div class="fca">
+  <div class="fcc" id="fcard" onclick="flipCard()">
+    <div class="cff"><div class="cl">Question</div><div class="cq" id="fq"></div><div class="cs" id="fsf"></div></div>
+    <div class="cff cfb"><div class="cl">Answer</div><div class="ca" id="fa"></div><div class="cs" id="fsb"></div></div>
+  </div>
+</div>
+<div class="fn">
+  <button class="btn bo" onclick="prevCard()">&#8592; Prev</button>
+  <span class="fct" id="fctr">1 / 35</span>
+  <button class="btn bo" onclick="nextCard()">Next &#8594;</button>
+</div>
+<div style="text-align:center;margin-bottom:1.5rem;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+  <button class="btn bp" onclick="shuffleCards()">&#x1F500; Shuffle</button>
+  <button class="btn bo" onclick="filterCards('all')">All</button>
+  <button class="btn bo" onclick="filterCards('IFP')" style="border-color:#e63030;color:#e63030">IFP Only</button>
+  <button class="btn bo" onclick="filterCards('HFSS')" style="border-color:#4e9eff;color:#4e9eff">HFSS Only</button>
+  <button class="btn bo" onclick="resetCards()">&#8635; Reset</button>
+</div>
+</div>
+
+<!-- PRACTICE TEST -->
+<div id="tst" class="tc">
+<div class="sh">PRACTICE TEST</div>
+<div class="ss">PREDICTED EXAM QUESTIONS &middot; CLICK ANSWER &middot; USE &#x1F50D; SEARCH FOR HELP</div>
+<div class="qi">&#x26A1; <strong>Stuck?</strong> Press the <strong>&#x1F50D; Keyword Search</strong> button in the header (or press <kbd>K</kbd>) and type any keyword to instantly pull relevant notes &mdash; without leaving the test.</div>
+<div class="scbar">
+  <div><div class="sclbl">Score</div><div class="scnum" id="scdisp">0 / 0</div></div>
+  <div style="flex:1"></div>
+  <button class="btn bo" onclick="resetQuiz()">&#8635; Reset Quiz</button>
+</div>
+<div id="qcont"></div>
+</div>
+
+<!-- SEARCH OVERLAY -->
+<div id="sover" onclick="handleOC(event)">
+  <div class="sbk"></div>
+  <div class="sbox">
+    <div class="shdr">
+      <span class="sico">&#x1F50D;</span>
+      <input id="sinp" type="text" placeholder="Search keywords&hellip; (e.g. SLC short, password, JumpStart, DHCP)" oninput="doSearch()" autocomplete="off" spellcheck="false"/>
+      <button class="sclse" onclick="closeS()">ESC</button>
+    </div>
+    <div class="sres" id="sres">
+      <div class="shint">Search all keynotes from both days.<br>
+      Try: <span onclick="qs('SLC short')">SLC short</span> &middot; <span onclick="qs('password')">password</span> &middot; <span onclick="qs('JumpStart')">JumpStart</span> &middot; <span onclick="qs('mapping')">mapping</span> &middot; <span onclick="qs('USB')">USB</span> &middot; <span onclick="qs('Get Config')">Get Config</span> &middot; <span onclick="qs('DHCP')">DHCP</span> &middot; <span onclick="qs('relay')">relay</span> &middot; <span onclick="qs('zone')">zone</span> &middot; <span onclick="qs('pattern')">pattern</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const KB=[
+{t:"Defaulting Pre-V7",s:"IFP",i:["Default installer code is 123456","Do NOT press Enter after entering code on pre-V7","Navigate: 7 Panel Programming then 7 Restore Defaults","Scroll to YES, press Enter twice","Panel restarts at factory default, firmware stays the same"]},
+{t:"Defaulting V7+",s:"IFP",i:["Press Enter at main screen to open Login Menu on V7+","Select Admin 1, default code is 0000000 seven zeros","Must press Enter after entering code on V7+","Navigate: 4 Restore Defaults YES Enter twice","Firmware does NOT change when you default"]},
+{t:"Password Requirements V7+",s:"IFP",i:["Admin 1 code must be exactly 7 digits long","Cannot be the same digit seven times like 0000000","Cannot be sequential like 1234567 or 7654321","Recommended: model number with leading zeros like 0002100 or 0000300","V7.00.12 and higher: changing Admin 1 updates all 4 codes at once","Always write the code down, no backdoor password exists on Series Black"]},
+{t:"Lost Password Recovery lockout hex",s:"IFP",i:["After 10 incorrect login attempts the panel locks for 30 seconds","11th incorrect attempt displays an encrypted 20-character hex string","Contact Technical Support with this hex string","Must provide a Password Agreement signed and notarized by the panel owner or manager","Cannot be signed by the technician or dealer, must be site owner or management","Process can take 1 to 3 days"]},
+{t:"JumpStart incremental SLC devices zones",s:"IFP",i:["JumpStart scans all SLC devices and assigns types automatically","Incremental means it builds on existing programming and does NOT erase","Adds new devices found on SLC and removes devices no longer present","Monitor Modules default to Manual Pull type, change manually if needed","All input points assigned to Zone 1 by default after JumpStart","Must select SLC protocol when launching, only one protocol per panel","JumpStart only accessible through annunciator, not HFSS","If a module already has a type assigned JumpStart will not overwrite it"]},
+{t:"JumpStart Default Groups 998 999",s:"IFP",i:["Group 1 contains all output points including NACs SLC relays LEDs","Group 998 is Onboard Relay 1 used for Supervisory by default","Group 999 is Onboard Relay 2 used for Alarm by default","Groups 997 through 999 should not have other devices added","Maximum of 999 output groups on IFP-2100"]},
+{t:"Point ID SBUS module format MM sensor module SD IDP protocol",s:"IFP",i:["Point ID format is MM colon S or M or P then NNN","Fixed IDs: 94 NVCM, 95 SKNICK, 97 Internal SLC, 98 Internal Power Supply, 99 Onboard Annunciator","S is Sensor for IDP or SK protocol, M is Module for IDP or SK, P is Point for SD protocol only","NNN is the three-digit zero-filled address","I/O circuits have no letter in the point ID, just the number","SD protocol does not separate sensors from modules, everything is P for Point"]},
+{t:"Input Point Zone difference single addressable",s:"IFP",i:["An input point is a single addressable device such as a smoke detector heat detector or pull station","An input zone is a logical group of multiple input points","Every input point must be assigned to exactly one zone, cannot belong to more than one","Multiple points can share the same zone","Maximum of 999 input zones on IFP-2100","13 zone event types including alarms supervisory trouble CO alarm water flow Zone Aux 1 and 2"]},
+{t:"Output Point Group NAC relay sync pattern mix",s:"IFP",i:["An output point is a single notification circuit or relay","An output group is a collection of output points that all respond the same way","Each output point can belong to exactly one output group","Never mix NACs and relays in the same output group, they require different output patterns","Only one output pattern is allowed per group","Pattern 00 is Constant and Pattern 19 is System Sensor Sync"]},
+{t:"Mapping link input zone output group annunciator HFSS only",s:"IFP",i:["Mapping links input zones to output groups, this tells the system what to activate when an event occurs","When an input zone is triggered all output groups mapped to it activate","Any number of input zones can be mapped to one output group","One input zone can be mapped to any number of output groups","Mapping CANNOT be programmed through the annunciator, must be done through HFSS only","Always pull the program down using Get Configuration after making any changes"]},
+{t:"Function Keys Macro recording latch toggle disable installer",s:"IFP",i:["Function keys record macros, sequences of disable and enable actions","To record: press and hold the function key, enter installer code, press 1 to start recording","Record any disable or enable of points zones or groups","To end: press and hold same function key, enter installer code, press 1 to end","Function keys act as a toggle, press once to activate, press again to deactivate","Function keys latch through a reset, great for annual testing","After recording do a Get Configuration in HFSS to save a digital copy","If a download is done without getting config first the macro will be erased","Only Installer profile can activate function keys by default"]},
+{t:"Troubleshooting SLC Device Locator IO Point Control Point Status calibration NFPA",s:"IFP",i:["SLC Device Locator finds a device by flashing its LED and times out after 10 minutes","Multiple Device Locator locates up to 8 devices at once, both flash when double address exists","System shuts down during SLC device locating, press Enter to accept","I/O Point Control toggles output points or trips input devices for testing, no timer, must be enabled in user profile","Point Status states: NORMAL in compliance, ALARM in alarm, CAL MAINT needs maintenance still compliant, CAL TRBLE out of NFPA 72 compliance replace detector","Detectors are sampled every 3 hours by the control panel"]},
+{t:"HFSS System Requirements Windows USB version",s:"HFSS",i:["HFSS requires 64-bit Windows 10 or Windows 11","Must have at least one active USB port for panel communication","New Series Black panels use USB only, no DB9 serial port","USB 2.0 is most stable, USB 3.0 may work on latest firmware","Only one program file open at a time to avoid programming the wrong panel","Company blocked USB ports, contact IT to enable them"]},
+{t:"HFSS Menus Help Licensing About version Window Options View Queue Toolbar Status Bar",s:"HFSS",i:["Help About shows build date Technical Support phone number and software version","Help Licensing log in with CLSS credentials to enable programming license","Window menu arrange cascade tile horizontal or tile vertical, still only use one at a time","Options Communication select USB, the only option for Series Black panels","Options File set the default folder where HFSS saves files","Options Panel Password change panel passwords, requires HFSS 8.0.21.10 and firmware 7.00.16 or higher","View menu toggle Queue Toolbar and Status Bar display","Queue is the white area at bottom showing all communication events","Status Bar at very bottom-right showing real-time communication status"]},
+{t:"HFSS Password Change via Software version firmware requirements",s:"HFSS",i:["Changing passwords via HFSS requires HFSS version 8.0.21.10 or higher","Panel must have firmware version 7.00.16 or higher","Go to Options Panel Password, enter current Admin 1 password default 0000000, click Get Panel Passwords","Current passwords for Installer Multi-Site Installer Admin 1 and Computer Access will appear","Change them and click Set Panel Passwords","Passwords that do not meet requirements shown in red, click OK and enter valid passwords","Same password rules: 7 digits no repetition no sequential numbers"]},
+{t:"HFSS Status Bar Waiting USB port connection no panel detected complete",s:"HFSS",i:["Status Bar at very bottom-right shows real-time communication status","Waiting on USB port means the panel is detected and ready, this is the green light","No panel detected on USB port means panel is not recognized, troubleshoot","Successful Get Configuration shows Status as Complete and progress bar at 100 percent","Panel not ready means one of the connection conditions was not met"]},
+{t:"HFSS Panel Connection Conditions requirements SLC Short supervisory alarm programming menu tamper",s:"HFSS",i:["Panel must be at Normal or Trouble status at the main screen","Cannot connect during an active Fire Alarm","Cannot connect during an active Supervisory Alarm, active tampers cause supervisory","Cannot connect while inside a Keypad Programming menu","Cannot connect during SLC Initialization","SLC Short is the only trouble that prevents connection on a standalone system because it causes continuous SLC initialization","Open circuits missing points and double address troubles do NOT prevent connection","Disconnect active tampers before trying to upload or download"]},
+{t:"HFSS USB Troubleshooting solutions no panel detected NFN Gateway Notifier power cycle",s:"HFSS",i:["Unplug and re-plug the USB cable","Try a different USB port on the computer","Try a different USB cable","Make sure the cable connection is not loose","Go to Options Communication and confirm USB is selected","Try connecting using a USB 2.0 port instead of USB 3.0","Restart HFSS and try connecting before or after opening the software","Power cycle both the panel and the computer","Make sure the panel is powered on and at the main screen before connecting","If running Notifier software close the NFN Gateway process in Windows Task Manager","Check that Windows updates are current","Expired CLSS license does not prevent panel detection, only prevents Set Configuration"]},
+{t:"HFSS File Menu Get Config Set Config Upload Download Event History Report Header name",s:"HFSS",i:["Get Configuration is the upload, transfers programming from panel to computer","Set Configuration is the download, transfers programming from computer to panel","New Configuration creates blank program with only the panel and no devices","Open Configuration loads a previously saved file","Get Event History pulls panel event log to computer","Get Detector Status pulls detector sensitivity and compliance data","Report Header add company name address logo, export to Word Excel or PDF","Always name configuration files with customer or location name, auto-naming gets confusing","Default Computer Access Number is 123456 and default Computer Code is 0"]},
+{t:"HFSS Directory Tree Site Panel right click add rename 32 sites SBUS module",s:"HFSS",i:["Directory tree is in top-left panel, click plus or minus to expand or collapse","Right-click a Site to Add Site Add Panel Delete Site or Rename Site","Maximum of 32 sites in one HFSS file","Right-click a Panel to Add Panel Add SBUS Module Delete Panel Rename Panel or Change Panel ID","Different Series Black models can be networked in same file including 2100, 300, and 75","Right-clicking is the primary method of interacting with the programming tree"]},
+{t:"HFSS Panel Parameters banner SLC protocol water flow delay alarm verification auto unsilence sensitivity detector",s:"HFSS",i:["Custom Banner can have up to 40 characters auto-centered and only displays in Normal mode","SLC Protocol selection: IDP, SK/SS, or SD, only one protocol per panel","Water Flow Delay 1 to 90 seconds is a global setting, do NOT use if water flow already has built-in delay","Alarm Verification Time 1 to 250 seconds set per zone","Auto-Unsilence Time 4 or 24 hours causes panel to beep again if event was silenced but not resolved","Auto Test Report every 4 6 12 or 24 hours","Detector Sensitivity set different sensitivity for day and night with start times","Sync Strobes Active When Silenced keeps strobes flashing after horns silenced, not code-compliant in US","Alternate Sonox Names custom label Zone Aux 1 and Zone Aux 2 events up to 20 characters"]},
+{t:"HFSS Communications menu phone line prefix DHCP static IP line disabled dial tone AlarmNet",s:"HFSS",i:["Line Prefix field is for dial-out prefix codes only, do NOT put the phone number here, maximum 9 digits","Phone Line Monitor checkbox monitors line voltage, below 3 volts triggers phone line trouble","Dialing set to Tone most common, Pulse is available","Line Disabled checkbox use to make local-only system or when using non-phone-line communicator","Dial Tone Detection Disabled use when communicator like IP-DACT does not provide dial tone","DHCP Enabled automatically gets IP address subnet mask and gateway from network","Static IP uncheck DHCP then manually enter IP address subnet mask and default gateway","AlarmNet supervision timer every 5 minutes 1 hour 6 hours or 24 hours"]},
+{t:"HFSS Input Zones label right click filter mapping event check marks elevator smoke",s:"HFSS",i:["Input Zones section lists all zones, right-click to add label or modify","Zone labels can be up to 25 characters, always label your zones","Use Show Points filter to find specific points quickly","In mapping check marks show which event types trigger which outputs","Remove check marks for event types not present in the zone","Elevator smoke example: put in its own zone, only map elevator recall relay group to it","Always labeling zones makes mapping and troubleshooting much easier"]},
+{t:"HFSS Output Groups right click add label pattern assign export CSV auto increment NAC relay circuit type",s:"HFSS",i:["Right-click a group number to Add New Group specifying start number and quantity","Group labels can be up to 25 characters, always label your output groups","Right-click point type to change circuit type including NAC Class A or B Aux Power detector input or dry contact","Right-click group column to assign point to a different group","Select multiple rows and assign them all to same group or use Auto-Increment","Export Points List as CSV for sharing with central station or inspector","Always put labels in, unlabeled programs are very difficult to work with"]},
+{t:"HFSS Templates mega group multiple groups function key mapping disable",s:"HFSS",i:["A template is a group of groups, think of it as a mega group","Use templates to map multiple groups to a zone at once or disable them all with a single function key","Right-click in the Templates section to Add New Template","Name the template and use the arrows to move groups from Available to Selected","Example: All Horn Strobes template containing all NAC groups from all floors","Activation Cadence setting in output groups only applies when using templates"]},
+{t:"HFSS Mapping three levels zone panel site select groups remove show zones undo",s:"HFSS",i:["Three levels of mapping: Zone Mapping, Panel Mapping, and Site Mapping","Zone Mapping is most common, maps events from specific areas like detector alarm or water flow","Panel Mapping maps panel-level events like AC trouble or battery fault, mostly for LED annunciators","Site Mapping covers ECS events function key triggers and general alarm or supervisory","To map: right-click a zone and choose Select Groups to Map, move desired groups to Selected, click OK","Remove Zone Mapping permanently deletes all mapping for that zone, there is NO undo","To add zone back: right-click existing zone and use Show Zones to Map","Mapping is the most important part of programming a Farenhyt system","Mapping cannot be done through the annunciator, HFSS only"]},
+];
+
+const CARDS=[
+{s:"IFP",q:"Default installer code on pre-V7 — do you press Enter after it?",a:"123456 — do NOT press Enter after the code on pre-V7 firmware."},
+{s:"IFP",q:"Default Admin 1 code on V7+ — do you press Enter?",a:"0000000 (seven zeros). You MUST press Enter after entering the code on V7+."},
+{s:"IFP",q:"What are the three rules an Admin 1 code must follow on V7+?",a:"1) Exactly 7 digits · 2) Cannot be the same digit 7 times · 3) Cannot be sequential (1234567 or 7654321)"},
+{s:"IFP",q:"What happens after the 11th incorrect Admin login attempt?",a:"Encrypted 20-char hex string appears. Contact Tech Support + submit a notarized Password Agreement signed by the panel owner."},
+{s:"IFP",q:"What does JumpStart do and what makes it 'incremental'?",a:"Scans all SLC devices and assigns types automatically. Incremental = builds on existing programming, does NOT erase anything."},
+{s:"IFP",q:"What type do Monitor Modules get during JumpStart?",a:"Manual Pull — even if used for something else. Must manually change the type afterward."},
+{s:"IFP",q:"What zone are all inputs assigned to after JumpStart?",a:"Zone 1 — all inputs default to Zone 1."},
+{s:"IFP",q:"Three default output groups created by JumpStart on IFP-2100?",a:"Group 1 (all outputs) · Group 998 (Onboard Relay 1 — Supervisory) · Group 999 (Onboard Relay 2 — Alarm)"},
+{s:"IFP",q:"What does SBUS module ID 97 always represent?",a:"The Internal SLC. Also: 98 = Internal PSU · 99 = Onboard Annunciator · 95 = SKNICK · 94 = NVCM"},
+{s:"IFP",q:"A code shows '01:P127' — what protocol and what is SBUS 01?",a:"SD protocol (P = Point, SD only). SBUS 01 is an SLC expander card (e.g. 5815XL)."},
+{s:"IFP",q:"Can an input point be in more than one zone?",a:"No — exactly ONE zone per input point. Multiple points can share the same zone."},
+{s:"IFP",q:"Can an output point be in more than one output group?",a:"No — exactly ONE output group per output point."},
+{s:"IFP",q:"Why can't you mix NACs and relays in the same output group?",a:"Different output patterns required (NACs = sync; relays = constant). Only one pattern allowed per group."},
+{s:"IFP",q:"Where can mapping NOT be programmed?",a:"NOT through the annunciator (onboard or remote). HFSS software only."},
+{s:"IFP",q:"What happens to a function key macro when the panel is reset?",a:"It latches — the macro stays active through resets. Press the key again to deactivate."},
+{s:"IFP",q:"What must you do in HFSS after recording a function key macro?",a:"Get Configuration (upload). Without it, the next Set Configuration erases the macro."},
+{s:"IFP",q:"SLC Device Locator — what does it do and when does it time out?",a:"Flashes LED on a target device to locate it. Also identifies double-address troubles. Times out after 10 minutes."},
+{s:"IFP",q:"What are the four Point Status states for a smoke detector?",a:"NORMAL · ALARM · CAL MAINT (needs maintenance, still compliant) · CAL TRBLE (out of NFPA 72 compliance)"},
+{s:"HFSS",q:"What HFSS and firmware versions are required to change passwords via HFSS?",a:"HFSS must be V8.0.21.10 or higher AND panel firmware must be V7.00.16 or higher."},
+{s:"HFSS",q:"What HFSS Status Bar message means the panel is detected and ready?",a:"'Waiting on USB port' — the green light. Any other message means troubleshoot."},
+{s:"HFSS",q:"What must show in the Queue for a successful Get Configuration?",a:"Status = 'Complete' AND progress bar = 100%. Both must be present."},
+{s:"HFSS",q:"Which is the ONLY trouble that prevents connecting to a standalone panel via HFSS?",a:"SLC Short — causes continuous SLC initialization. Open circuits, missing points, double address = still OK to connect."},
+{s:"HFSS",q:"What conditions must the panel meet to allow Get or Set Configuration?",a:"Normal or Trouble at main screen · No Fire Alarm · No Supervisory · Not in programming menu · No SLC Short or SLC Initialization"},
+{s:"HFSS",q:"Get Configuration vs Set Configuration — what's the difference?",a:"Get Config = Upload (panel → computer). Set Config = Download (computer → panel)."},
+{s:"HFSS",q:"Default Computer Access Number and Computer Code in HFSS?",a:"Computer Access Number: 123456. Computer Code: 0 (single zero)."},
+{s:"HFSS",q:"HFSS says 'No panel detected on USB port' — first steps to try?",a:"Reconnect cable · Try different port · Try different cable · Confirm USB selected in Options · Restart HFSS · Power cycle panel"},
+{s:"HFSS",q:"What is a Template in HFSS and what is it used for?",a:"A group of groups (mega group). Map multiple groups to a zone at once OR disable them all with a single F-key."},
+{s:"HFSS",q:"What are the three levels of mapping in HFSS?",a:"1) Zone Mapping (area events — most common) · 2) Panel Mapping (panel events — AC, battery) · 3) Site Mapping (ECS, F-keys, general alarm)"},
+{s:"HFSS",q:"What happens if you click 'Remove Zone Mapping' in HFSS?",a:"Permanently deletes all mapping for that zone — NO UNDO. To restore: right-click zone → Show Zones to Map."},
+{s:"HFSS",q:"What should NOT go in the Line Prefix field in HFSS Communications?",a:"The phone number. Line Prefix is for prefix codes only (max 9 digits). Phone number goes in a separate field."},
+{s:"HFSS",q:"When should you use the 'Line Disabled' checkbox in Communications?",a:"Local-only systems (no central station) OR when using a non-phone-line communicator (contact radio, IP communicator)."},
+{s:"HFSS",q:"What does Water Flow Delay do and when should you NOT use it?",a:"Delays water flow alarm reporting 1–90 sec (global). Do NOT use if device already has built-in delay — would double the delay."},
+{s:"HFSS",q:"What does Auto-Unsilence Time do?",a:"Causes panel to beep again after 4 or 24 hrs if an event was silenced but not resolved."},
+{s:"HFSS",q:"How do you add a zone back to the mapping list after removing it?",a:"Right-click any existing zone → 'Show Zones to Map' → select panel → move zone from Available to Selected → OK."},
+{s:"HFSS",q:"Running Notifier software alongside HFSS causes connection issues — how do you fix it?",a:"Close the NFN Gateway process in Windows Task Manager. It interferes with HFSS USB communication."},
+];
+
+let fcOrd=CARDS.map((_,i)=>i),fcIdx=0,flpd=false,fFilt='all';
+function gfo(){return fFilt==='all'?CARDS.map((_,i)=>i):CARDS.map((_,i)=>i).filter(i=>CARDS[i].s===fFilt);}
+function renderCard(){
+  if(!fcOrd.length){document.getElementById('fq').textContent='No cards match filter.';return;}
+  const c=CARDS[fcOrd[fcIdx]];
+  document.getElementById('fq').textContent=c.q;
+  document.getElementById('fa').textContent=c.a;
+  const cl=c.s==='IFP'?'cs csi':'cs csh';
+  ['fsf','fsb'].forEach(id=>{const el=document.getElementById(id);el.textContent=c.s;el.className=cl;});
+  document.getElementById('fctr').textContent=(fcIdx+1)+' / '+fcOrd.length;
+  document.getElementById('fprog').style.width=((fcIdx+1)/fcOrd.length*100)+'%';
+  document.getElementById('fcard').classList.remove('fl');flpd=false;
+}
+function flipCard(){document.getElementById('fcard').classList.toggle('fl');flpd=!flpd;}
+function nextCard(){fcIdx=(fcIdx+1)%fcOrd.length;renderCard();}
+function prevCard(){fcIdx=(fcIdx-1+fcOrd.length)%fcOrd.length;renderCard();}
+function shuffleCards(){for(let i=fcOrd.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[fcOrd[i],fcOrd[j]]=[fcOrd[j],fcOrd[i]];}fcIdx=0;renderCard();}
+function filterCards(f){fFilt=f;fcOrd=gfo();fcIdx=0;renderCard();}
+function resetCards(){fFilt='all';fcOrd=CARDS.map((_,i)=>i);fcIdx=0;renderCard();}
+renderCard();
+
+const QS=[
+{q:"On firmware V7+, what is the FIRST step when defaulting the panel?",o:["Enter installer code 123456","Press 7 for Panel Programming","Press Enter to access the Login Menu","Power cycle the panel twice"],a:2,d:"easy",s:"IFP",e:"On V7+ you press ENTER at the main screen to open the Login Menu. On pre-V7 you enter the installer code directly without pressing Enter."},
+{q:"Which Admin 1 code is VALID on firmware V7+?",o:["1234567","7654321","0000000","0002100"],a:3,d:"med",s:"IFP",e:"0002100 meets all three rules: 7 digits, not all same, not sequential. 1234567 and 7654321 are sequential. 0000000 is all the same digit."},
+{q:"What happens after the 11th incorrect Admin login on a Series Black panel?",o:["Panel resets to factory default","Panel displays a backdoor prompt","Panel shows encrypted 20-char hex string requiring Tech Support","Panel permanently locks until firmware update"],a:2,d:"hard",s:"IFP",e:"After the 10th attempt there is a 30-second lockout. The 11th triggers an encrypted hex string. Tech Support needs this string PLUS a notarized Password Agreement from the panel owner."},
+{q:"JumpStart is 'incremental.' What does this mean?",o:["It erases all programming before scanning","It builds on existing programming and only adds/removes changed devices","It programs devices one at a time in address order","It requires manual confirmation for each device"],a:1,d:"easy",s:"IFP",e:"JumpStart does NOT erase existing programming. It adds newly found devices and removes devices no longer present, leaving all other configuration intact."},
+{q:"What type is automatically assigned to Monitor Modules during JumpStart?",o:["Duct Detector","Photo Smoke","Manual Pull","Heat Detector"],a:2,d:"easy",s:"IFP",e:"Monitor Modules default to Manual Pull during JumpStart regardless of actual purpose. You must manually change the type if needed."},
+{q:"A panel shows '01:S099' in trouble. What does '01' represent?",o:["Internal SLC","Onboard annunciator","External SBUS module (SLC expander card)","Internal power supply"],a:2,d:"med",s:"IFP",e:"Internal SLC is always 97, PSU is 98, annunciator is 99. Since SBUS 01 is not a fixed address, it must be an SLC expander card like the 6815."},
+{q:"Panel shows '97:P001' missing. Tech installs IDP detector at address 1 — trouble remains. Why?",o:["Base is faulty","Wrong address on detector","Panel uses SD protocol — requires an SD detector","Point not assigned a zone"],a:2,d:"hard",s:"IFP",e:"'P' in the point ID means SD protocol. IDP detectors cannot work on an SD-configured panel. You need an SD detector."},
+{q:"How many input zones can a single input point be assigned to?",o:["Unlimited","Up to 5","Up to 10","Exactly 1"],a:3,d:"easy",s:"IFP",e:"Each input point belongs to exactly one input zone only. Multiple points can share the same zone."},
+{q:"Why should NAC circuits and relays NEVER be in the same output group?",o:["Panel allows only one device type per group","They need different output patterns and only one pattern is allowed per group","Relays have a maximum of 2 per group","NACs need a separate zone assignment"],a:1,d:"med",s:"IFP",e:"NACs need a sync pattern (Pattern 19) and relays need a constant pattern (Pattern 00). Only one output pattern per group — mixing causes sync failure or latching problems."},
+{q:"Mapping on the Farenhyt IFP CANNOT be programmed through:",o:["HFSS software","A USB cable connection","An annunciator (onboard or remote)","The CLSS platform"],a:2,d:"easy",s:"IFP",e:"Mapping can ONLY be done through HFSS. It cannot be programmed through the annunciator — even a remote RA-2000. Point types and function keys CAN be done via the annunciator."},
+{q:"A function key was activated to disable NACs. Tech presses Reset. What happens?",o:["Function key automatically deactivates","NACs re-enabled after reset","Function key stays latched — NACs remain disabled","Panel requests code to maintain the disable"],a:2,d:"med",s:"IFP",e:"Function keys latch through resets. This makes them useful for annual testing — disable NACs once and they stay disabled through every reset."},
+{q:"After recording a function key macro, what is the critical next step?",o:["Test the macro immediately","Reboot the panel","Perform a Get Configuration in HFSS","Disable the macro before leaving"],a:2,d:"med",s:"IFP",e:"After recording, do Get Configuration in HFSS. This saves a digital copy. Without it, the next Set Configuration will erase the macro."},
+{q:"The SLC Device Locator times out after:",o:["5 minutes","10 minutes","30 minutes","It does not time out"],a:1,d:"easy",s:"IFP",e:"The SLC Device Locator times out after 10 minutes. You can also manually exit by pressing the left arrow key."},
+{q:"A detector shows 'CAL MAINT' in Point Status. What does this mean?",o:["Detector is in alarm","Out of NFPA 72 compliance — replace immediately","Needs maintenance but still within compliance limits","Detector is missing from SLC"],a:2,d:"med",s:"IFP",e:"CAL MAINT = approaching out-of-compliance but still within NFPA 72 limits. CAL TRBLE = out of compliance, must replace detector."},
+{q:"What does SBUS module ID '97' always represent?",o:["Internal Power Supply","Onboard Annunciator","Internal SLC","SKNICK network interface card"],a:2,d:"easy",s:"IFP",e:"97 = Internal SLC. 98 = Internal Power Supply. 99 = Onboard Annunciator. 95 = SKNICK. These are fixed IDs."},
+{q:"What HFSS version AND firmware version are required to change passwords via HFSS?",o:["HFSS 7.0 and firmware 7.00.02","HFSS 8.0.21.10 and firmware 7.00.16","HFSS 8.0.21.10 and firmware 7.00.12","Any HFSS version with firmware 7+"],a:1,d:"med",s:"HFSS",e:"HFSS must be version 8.0.21.10 or higher AND the panel must have firmware 7.00.16 or higher. Both conditions must be met."},
+{q:"What HFSS Status Bar message means the panel is connected and ready?",o:["Panel Detected","USB Connected","Waiting on USB port","Communication Active"],a:2,d:"easy",s:"HFSS",e:"'Waiting on USB port' is the green light — software has recognized the panel and is ready for Get or Set Configuration."},
+{q:"Which trouble is the ONLY one that prevents connecting to a standalone panel in HFSS?",o:["Missing point trouble","Double address trouble","SLC Short","Open circuit trouble"],a:2,d:"hard",s:"HFSS",e:"SLC Short causes continuous SLC initialization loops which prevents any HFSS communication. Open circuits, missing points, and double addresses do NOT prevent connection."},
+{q:"What must both show in the Queue for a successful Get Configuration?",o:["Status: Uploading and progress 50%","Status: Complete and progress 100%","Status: Done and no errors","Status: Received and file saved"],a:1,d:"med",s:"HFSS",e:"Both must be present: Status reads 'Complete' AND progress bar shows 100%. 'Panel not ready' even at 100% means the config was NOT pulled successfully."},
+{q:"Panel has an active supervisory (closed tamper). Can you do a Get Configuration?",o:["Yes, supervisory doesn't affect HFSS","No, active supervisory prevents communication","Yes, but only for tamper trouble","Yes, as long as SLC is functioning"],a:1,d:"med",s:"HFSS",e:"Active supervisory events including closed tampers prevent HFSS communication. Disconnect tamper switches to clear the supervisory first."},
+{q:"Get Configuration vs Set Configuration — which is upload vs download?",o:["Get = download from Internet; Set = upload to cloud","Get = upload from panel to computer; Set = download from computer to panel","Get = save to disk; Set = print PDF","Get = open from disk; Set = connect to panel"],a:1,d:"easy",s:"HFSS",e:"Get Configuration = Upload — getting the program FROM the panel to your computer. Set Configuration = Download — setting the program FROM your computer to the panel."},
+{q:"What should NOT be entered in the Line Prefix field in HFSS Communications?",o:["A long distance code","A 9 to get an outside line","The full phone number","A pause character"],a:2,d:"med",s:"HFSS",e:"Line Prefix is for prefix codes only — never the actual phone number. It accepts max 9 digits. Entering the number here causes double-dialing."},
+{q:"What does the HFSS Auto-Unsilence Time setting do?",o:["Clears all troubles after a set time","Resets panel if no user activity","Causes panel to beep again if event was silenced but not resolved","Disconnects HFSS after inactivity"],a:2,d:"med",s:"HFSS",e:"If a trouble is silenced but not actually fixed, Auto-Unsilence causes the panel to start beeping again after 4 or 24 hours."},
+{q:"What is a Template in HFSS?",o:["A pre-built config for common panel types","A group of output groups mapped or disabled together","A saved zone layout for other projects","A default mapping pattern for new panels"],a:1,d:"med",s:"HFSS",e:"A template is a group of groups — a mega group. Map several output groups to a zone at once, or disable them all with one function key."},
+{q:"What is the consequence of clicking 'Remove Zone Mapping' in HFSS?",o:["Zone mapping moved to archive","Zone mapping permanently deleted with NO undo","Zone removed from the panel program entirely","Zone mapping reset to default check marks"],a:1,d:"hard",s:"HFSS",e:"Remove Zone Mapping permanently deletes all mapping for that zone — NO undo. To get the zone back: right-click another zone → 'Show Zones to Map'."},
+];
+
+let qAns=new Array(QS.length).fill(null),qCor=0,qTot=0;
+function buildQuiz(){
+  const c=document.getElementById('qcont');c.innerHTML='';
+  QS.forEach((q,qi)=>{
+    const dc=q.d==='easy'?'de':q.d==='med'?'dm':'dh';
+    const sc=q.s==='IFP'?'sti':'sth';
+    const d=document.createElement('div');d.className='qcard';
+    d.innerHTML='<div class="qhd"><div class="qnum">Q'+(qi+1)+'</div><div class="qtxt">'+q.q+'</div><div class="qtags"><span class="qdf '+dc+'">'+q.d.toUpperCase()+'</span><span class="qst '+sc+'">'+q.s+'</span></div></div>'
+    +'<ul class="optl" id="ol'+qi+'">'+q.o.map((opt,oi)=>'<li class="opt" onclick="sa('+qi+','+oi+')" id="op'+qi+'_'+oi+'"><span class="optltr">'+String.fromCharCode(65+oi)+'.</span>'+opt+'</li>').join('')+'</ul>'
+    +'<div class="expl" id="ex'+qi+'"><strong>&#10003; Explanation:</strong> '+q.e+'</div>';
+    c.appendChild(d);
+  });
+  document.getElementById('scdisp').textContent='0 / 0';
+}
+function sa(qi,oi){
+  if(qAns[qi]!==null)return;
+  qAns[qi]=oi;
+  const cor=QS[qi].a;
+  document.querySelectorAll('#ol'+qi+' .opt').forEach((el,i)=>{
+    el.style.cursor='default';
+    if(i===cor)el.classList.add('cor');
+    else if(i===oi&&oi!==cor)el.classList.add('wrg');
+  });
+  document.getElementById('ex'+qi).classList.add('vis');
+  if(oi===cor)qCor++;
+  qTot++;
+  document.getElementById('scdisp').textContent=qCor+' / '+qTot;
+}
+function resetQuiz(){qAns=new Array(QS.length).fill(null);qCor=0;qTot=0;buildQuiz();}
+buildQuiz();
+
+function swTab(id,btn){
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+const HINT='<div class="shint">Search all keynotes from both days.<br>Try: <span onclick="qs(\'SLC short\')">SLC short</span> &middot; <span onclick="qs(\'password\')">password</span> &middot; <span onclick="qs(\'JumpStart\')">JumpStart</span> &middot; <span onclick="qs(\'mapping\')">mapping</span> &middot; <span onclick="qs(\'USB\')">USB</span> &middot; <span onclick="qs(\'Get Config\')">Get Config</span> &middot; <span onclick="qs(\'DHCP\')">DHCP</span> &middot; <span onclick="qs(\'relay\')">relay</span> &middot; <span onclick="qs(\'zone\')">zone</span> &middot; <span onclick="qs(\'pattern\')">pattern</span></div>';
+
+function openS(){document.getElementById('sover').classList.add('open');setTimeout(()=>document.getElementById('sinp').focus(),60);}
+function closeS(){document.getElementById('sover').classList.remove('open');document.getElementById('sinp').value='';document.getElementById('sres').innerHTML=HINT;}
+function handleOC(e){if(e.target===document.getElementById('sover')||e.target.classList.contains('sbk'))closeS();}
+function qs(term){document.getElementById('sinp').value=term;doSearch();}
+function hl(text,term){const re=new RegExp('('+term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');return text.replace(re,'<mark>$1</mark>');}
+function doSearch(){
+  const raw=document.getElementById('sinp').value.trim(),q=raw.toLowerCase(),res=document.getElementById('sres');
+  if(q.length<2){res.innerHTML='<div class="sempty">Type at least 2 characters&hellip;</div>';return;}
+  let matched=[];
+  KB.forEach(card=>{
+    const topicOk=card.t.toLowerCase().includes(q);
+    const hits=card.i.filter(item=>item.toLowerCase().includes(q));
+    if(topicOk||hits.length)matched.push({...card,hits:hits.length?hits:card.i.slice(0,3)});
+  });
+  if(!matched.length){res.innerHTML='<div class="sempty">No results for "'+raw+'"</div>';return;}
+  const tot=matched.reduce((a,c)=>a+c.hits.length,0);
+  res.innerHTML=matched.map(c=>{
+    const isH=c.s==='HFSS';
+    return'<div class="rcard"><div class="rtop"><span class="rname'+(isH?' b':'')+'">'+c.t+'</span><span class="rtag '+(isH?'csh':'csi')+'">'+c.s+'</span></div><div class="rbody">'+c.hits.map(h=>'<div class="rline">'+hl(h,raw)+'</div>').join('')+'</div></div>';
+  }).join('')+'<div class="rcnt">'+tot+' result'+(tot!==1?'s':'')+' across '+matched.length+' topic'+(matched.length!==1?'s':'')+'</div>';
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeS();
+  if(e.key==='k'&&!document.getElementById('sover').classList.contains('open')&&e.target.tagName!=='INPUT')openS();
+});
+document.getElementById('sres').innerHTML=HINT;
+</script>
+</body>
+</html>
