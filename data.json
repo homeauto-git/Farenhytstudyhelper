@@ -1,0 +1,597 @@
+{
+  "course": {
+    "title": "Farenhyt IFP + HFSS Study Guide",
+    "subtitle": "3-day instructor-led certification prep for keypad programming, HFSS, networking, ECS, and core hardware references",
+    "days": "Days 1-3",
+    "sourcePriority": ["SELF NOTES", "Transcripts", "Covered Slides", "Manuals", "Data Sheets"]
+  },
+  "highlights": [
+    {
+      "title": "Most testable workflow",
+      "points": [
+        "Know the difference between point, zone, group, and mapping.",
+        "Be able to default a panel on pre-V7 and V7+ firmware without mixing the login steps.",
+        "Remember that mapping is HFSS-only, while several point edits can still be done from the annunciator."
+      ]
+    },
+    {
+      "title": "Lab success focus",
+      "points": [
+        "Always pull the existing configuration before editing when you arrive on site.",
+        "Verify the queue shows Complete and 100% after Get or Set Configuration.",
+        "Review SLC protocol, point types, zones, groups, and mapping before trying to troubleshoot outputs."
+      ]
+    },
+    {
+      "title": "Exam trap reminders",
+      "points": [
+        "JumpStart is incremental and keypad-only.",
+        "Function key macros latch through reset.",
+        "Do not mix NACs and relays in the same output group because a group only has one output pattern."
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "ifp-programming",
+      "title": "IFP keypad programming",
+      "shortTitle": "IFP",
+      "badge": "Day 1",
+      "theme": "red",
+      "summary": "This section covers the installer-side keypad work that repeatedly showed up in notes and transcript emphasis: defaulting, password rules, JumpStart behavior, point and zone structure, output grouping, mapping concepts, function keys, and built-in troubleshooting tools.",
+      "keynotes": [
+        "Pre-V7 defaulting: set panel ID, power up, enter installer code 123456, do not press Enter after the code, then go to Panel Programming > Restore Defaults and confirm twice.",
+        "V7+ defaulting changes the login path: press Enter at the main screen, select Admin 1, enter the 7-digit Admin 1 code, press Enter, then Restore Defaults and confirm twice.",
+        "Restoring defaults clears programming but does not change the firmware version.",
+        "Admin 1 on newer firmware must be exactly 7 digits, cannot be the same digit seven times, and cannot be sequential. A model-based code like 0002100 is easier to remember while still meeting the rule set.",
+        "Repeated bad attempts trigger lockout behavior and eventually an encrypted hex string that has to be handled through Technical Support and the owner authorization process.",
+        "JumpStart is incremental. It adds newly seen devices, removes devices no longer present, and keeps existing programming that is still valid.",
+        "JumpStart assigns all inputs to Zone 1 by default and monitor modules default to Manual Pull unless they were already given a different type.",
+        "Every input point must belong to exactly one zone. Zones are the logical grouping layer for events and mapping.",
+        "Every output point belongs to one output group. Output groups are what you map to, and a group only carries one output pattern.",
+        "Do not mix NAC circuits and relays inside the same output group because the group pattern has to make sense for every member.",
+        "Mapping is the action/reaction link between input zones and output groups. It can be viewed conceptually from the keypad, but practical mapping edits are done in HFSS.",
+        "Function keys are macros. Hold the key, enter the installer code, start recording, perform the disable or enable actions, then hold the same key again to end recording.",
+        "Function key macros latch through reset, which is useful for annual testing but easy to forget if you do not document what was left active.",
+        "After recording a macro, pull the program into HFSS so the macro exists in the saved digital file. Otherwise a later download can overwrite it.",
+        "Built-in troubleshooting tools worth remembering are SLC Device Locator, Multiple Device Locator, I/O Point Control, and Point Status. They help confirm addresses, LED response, basic operation, and detector condition."
+      ],
+      "flashcards": [
+        {"q": "What is the biggest defaulting difference between pre-V7 and V7+ panels?", "a": "Pre-V7 uses installer code 123456 directly with no Enter after the code; V7+ enters through the Login Menu and Admin 1, and you do press Enter after the 7-digit code."},
+        {"q": "What does JumpStart do to existing programming?", "a": "It is incremental: it updates the device inventory without wiping the whole program."},
+        {"q": "How many zones must an input point belong to?", "a": "Exactly one zone."},
+        {"q": "How many output groups can one output point belong to?", "a": "One output group."},
+        {"q": "Why should NACs and relays stay in different groups?", "a": "Because each output group only has one pattern, and NAC behavior and relay behavior are not programmed the same way."},
+        {"q": "What happens to an F-key macro after a panel reset?", "a": "It remains latched until the key is toggled back off."}
+      ],
+      "examQuestions": [
+        {
+          "q": "Which statement about JumpStart is correct?",
+          "choices": [
+            "It erases the entire configuration before scanning.",
+            "It is incremental and keypad-only.",
+            "It can only be run from HFSS.",
+            "It forces every existing monitor module back to Manual Pull."
+          ],
+          "answer": 1,
+          "explanation": "Notes and transcript both emphasized that JumpStart is incremental and only available through the panel/annunciator side, not through HFSS."
+        },
+        {
+          "q": "What is the safest way to describe the relationship between zones and groups?",
+          "choices": [
+            "Zones are outputs and groups are inputs.",
+            "Zones collect inputs; groups collect outputs.",
+            "Zones and groups are interchangeable.",
+            "Groups only exist on networked systems."
+          ],
+          "answer": 1,
+          "explanation": "Input points are assigned into zones, while output points are assigned into groups. Mapping is what ties zones to groups."
+        },
+        {
+          "q": "A tech records a function key macro and then immediately leaves site without a Get Configuration. What is the risk?",
+          "choices": [
+            "The macro becomes read-only.",
+            "The macro will only work once.",
+            "A later Set Configuration can erase the macro from the saved file.",
+            "The panel will reject the next reset."
+          ],
+          "answer": 2,
+          "explanation": "The course repeatedly stressed pulling the current configuration after recording macros so the digital file matches the live panel."
+        }
+      ],
+      "workflows": [
+        {
+          "title": "Default a V7+ panel",
+          "steps": [
+            "Set the panel ID appropriately before power-up.",
+            "Press Enter at the main screen and choose Admin 1.",
+            "Enter the Admin 1 code, then press Enter.",
+            "Choose Restore Defaults and change the warning from No to Yes.",
+            "Press Enter twice to confirm and save the programming change."
+          ]
+        },
+        {
+          "title": "Record a function key macro",
+          "steps": [
+            "Hold the desired function key.",
+            "Enter the installer code and start F-key recording.",
+            "Perform the disable or enable actions you want captured.",
+            "Back out to the main menu and hold the same function key again to end recording.",
+            "Pull the configuration into HFSS so the saved file includes the macro."
+          ]
+        }
+      ],
+      "labChecklist": [
+        "Confirm the panel firmware family before using the wrong defaulting/login path.",
+        "Verify SLC protocol before running JumpStart on a new or changed system.",
+        "Check that monitor modules have the correct type after JumpStart, because default Manual Pull can be wrong for the job.",
+        "Document function key purpose and current state before leaving site."
+      ],
+      "commonMistakes": [
+        "Pressing Enter after the code on a pre-V7 panel, or forgetting Enter on a V7+ panel.",
+        "Assuming JumpStart is a clean wipe instead of an incremental update.",
+        "Leaving all inputs in Zone 1 and forgetting to reorganize them into useful logical groups.",
+        "Mixing output device types in one group and then wondering why pattern behavior is wrong."
+      ],
+      "troubleshooting": [
+        "SLC Device Locator can help identify the right address in the field and times out after about 10 minutes.",
+        "Multiple Device Locator helps catch duplicate address situations because multiple devices flash together.",
+        "Point Status helps distinguish normal, alarm, maintenance alert, and calibration trouble states."
+      ],
+      "quickReference": [
+        "Fixed SBUS IDs repeatedly referenced in training: 97 = internal SLC, 98 = internal power supply, 99 = onboard annunciator.",
+        "Group 1 is the default catch-all output group after JumpStart; 998 and 999 are reserved defaults for onboard relays.",
+        "Pattern 00 = constant; pattern 19 = System Sensor sync, which matters when reviewing NAC programming examples."
+      ],
+      "terms": [
+        {"term": "Input point", "definition": "One addressable initiating device such as a detector or module."},
+        {"term": "Input zone", "definition": "A logical group of input points used for event organization and mapping."},
+        {"term": "Output point", "definition": "A single controlled output such as a NAC, relay, or other output circuit."},
+        {"term": "Output group", "definition": "A logical group of output points that share activation behavior and are used in mapping."},
+        {"term": "JumpStart", "definition": "A keypad-driven auto-programming process that scans the SLC and updates the system incrementally."}
+      ],
+      "keywords": ["defaulting", "Admin 1", "JumpStart", "point ID", "zones", "groups", "mapping", "function keys", "device locator", "cal trouble"],
+      "sources": [
+        "Instructor Led Sections/THE BASICS OF PROGRAMMING/SELF NOTES/*.txt",
+        "Instructor Led Sections/THE BASICS OF PROGRAMMING/Transcripts/*.txt",
+        "Instructor Led Sections/THE BASICS OF PROGRAMMING/Covered Slides/3-IFP Programming Presentation - V2.pdf"
+      ]
+    },
+    {
+      "id": "hfss",
+      "title": "HFSS software workflow",
+      "shortTitle": "HFSS",
+      "badge": "Day 2",
+      "theme": "blue",
+      "summary": "HFSS is where the class moved from keypad concepts into full configuration management: opening programs, licensing, communications, queue verification, point and group programming, mapping detail, password changes, reports, and templates.",
+      "keynotes": [
+        "The class emphasized simple workstation requirements: 64-bit Windows 10 or 11 and at least one active USB port.",
+        "Best practice is to keep one program open at a time so you do not edit the wrong panel file.",
+        "HFSS licensing for panel programming is tied to CLSS licensing and the user account needs the proper training/license rights.",
+        "The green status bar message the class treated as the connection-ready indicator was 'Waiting on USB port.'",
+        "Get Configuration means upload from panel to computer; Set Configuration means download from computer to panel.",
+        "Do not trust the transfer until the queue shows Complete and the progress bar is at 100%.",
+        "Active supervisory conditions can block communication, so do not assume USB alone is the problem when the panel will not talk.",
+        "Password changes from HFSS require both a new enough HFSS version and a new enough panel firmware version.",
+        "Detector status reporting is useful because it shows normal, maintenance alert, and calibration trouble values across detectors and can be exported.",
+        "Event history can be pulled later and filtered, which makes it useful for after-the-fact troubleshooting.",
+        "Zone event mapping options such as latching, silenceable, timers, and map inhibit matter because they directly change output behavior.",
+        "The notes warned not to use both latching and silenceable together on the same mapping the way some beginners try to do. Treat those settings deliberately.",
+        "Templates in HFSS act like a group of groups: they let you map or disable multiple output groups together more efficiently.",
+        "Removing zone mapping is not an undo-friendly cleanup step. Treat it like a destructive action."
+      ],
+      "flashcards": [
+        {"q": "What does Get Configuration mean?", "a": "Upload the live panel program from the panel to your computer."},
+        {"q": "What two signs confirm a good queue transfer?", "a": "Status shows Complete and the progress bar reaches 100%."},
+        {"q": "What simple workstation practice reduces programming mistakes?", "a": "Keep only one HFSS program open at a time."},
+        {"q": "What report helps review detector maintenance condition?", "a": "Detector Status Reports."},
+        {"q": "What is an HFSS template in plain language?", "a": "A grouped collection of output groups that can be mapped or disabled together."},
+        {"q": "Why should you be careful with Remove Zone Mapping?", "a": "Because it is treated like a destructive delete, not a temporary hide."}
+      ],
+      "examQuestions": [
+        {
+          "q": "Which statement about HFSS communication is correct?",
+          "choices": [
+            "Get Configuration downloads from the cloud.",
+            "Set Configuration uploads from the panel to the laptop.",
+            "Get Configuration uploads from the panel to the computer.",
+            "Neither Get nor Set changes the queue."
+          ],
+          "answer": 2,
+          "explanation": "The course used 'upload' for panel-to-computer Get Configuration and 'download' for computer-to-panel Set Configuration."
+        },
+        {
+          "q": "What should you verify before trusting a finished transfer?",
+          "choices": [
+            "That the file icon changed colors.",
+            "That the queue shows Complete and 100%.",
+            "That the Windows USB sound played.",
+            "That the panel returned to normal."
+          ],
+          "answer": 1,
+          "explanation": "The queue confirmation was repeated as the real proof that the action completed successfully."
+        },
+        {
+          "q": "Why is keeping only one HFSS program open a recommended habit?",
+          "choices": [
+            "HFSS cannot save two files at once.",
+            "It reduces the chance of editing the wrong panel configuration.",
+            "Licensing only permits one file per day.",
+            "Templates only work in single-window mode."
+          ],
+          "answer": 1,
+          "explanation": "The training framed it as human-error prevention rather than a software limitation."
+        }
+      ],
+      "workflows": [
+        {
+          "title": "Safe HFSS connection flow",
+          "steps": [
+            "Confirm laptop requirements and that the USB port is enabled.",
+            "Open only the one panel file you intend to work on.",
+            "Connect and verify the status bar indicates the panel is ready.",
+            "Run Get Configuration before editing so you start from the live program.",
+            "Watch the queue until it is Complete and 100% before moving on."
+          ]
+        },
+        {
+          "title": "Review detector condition in HFSS",
+          "steps": [
+            "Open the detector status report for the connected or saved configuration.",
+            "Sort for maintenance alert or calibration trouble conditions.",
+            "Export the report if you need a field handoff or service follow-up list."
+          ]
+        }
+      ],
+      "labChecklist": [
+        "Check the queue after every Get or Set.",
+        "Pull event history and detector reports when troubleshooting instead of relying on memory alone.",
+        "Review map options carefully when outputs behave differently than expected."
+      ],
+      "commonMistakes": [
+        "Working from an outdated file because the current panel config was never pulled first.",
+        "Assuming USB is the only communication issue when the panel actually has an active condition blocking the session.",
+        "Changing mapping options casually without understanding latching, silenceable, timers, and inhibit settings."
+      ],
+      "troubleshooting": [
+        "Use event history filters to isolate recent alarm, supervisory, or trouble behavior.",
+        "Use detector status reports to distinguish maintenance trending from actual replacement-level calibration trouble.",
+        "When a mapping behaves strangely, review inhibit, latching, silenceability, and timer options rather than only checking the zone/group link itself."
+      ],
+      "quickReference": [
+        "HFSS version 8.0.21.10 or later plus panel firmware 7.00.16 or later were the course thresholds for changing panel passwords through software.",
+        "Licensing lives under the Help menu and ties into CLSS credentials/permissions.",
+        "Templates are useful when one zone needs to drive many output groups consistently."
+      ],
+      "terms": [
+        {"term": "Get Configuration", "definition": "Transfer the current panel program from the panel into the computer file."},
+        {"term": "Set Configuration", "definition": "Transfer the edited computer file into the panel."},
+        {"term": "Detector Status Report", "definition": "An HFSS report showing detector values and statuses such as normal, maintenance alert, and calibration trouble."},
+        {"term": "Template", "definition": "A reusable grouping of output groups that simplifies mapping or disable workflows."}
+      ],
+      "keywords": ["HFSS", "Get Configuration", "Set Configuration", "queue", "CLSS licensing", "detector report", "event history", "template", "mapping options"],
+      "sources": [
+        "Instructor Led Sections/HFSS SOFTWARE/SELF NOTES/*.txt",
+        "Instructor Led Sections/HFSS SOFTWARE/Transcripts/*.txt",
+        "Instructor Led Sections/HFSS SOFTWARE/Covered Slides/4-HFSS Presentation.pdf"
+      ]
+    },
+    {
+      "id": "networking",
+      "title": "Networking and multi-panel operation",
+      "shortTitle": "NET",
+      "badge": "Day 2",
+      "theme": "blue",
+      "summary": "Networking in this course meant panel-to-panel networking, not general IT networking. The repeated ideas were SK-NIC hardware, unique panel IDs, same firmware families, site behavior, and the difference between networked cooperation and independent site operation.",
+      "keynotes": [
+        "Networking in the course means Farenhyt panel-to-panel communication, not ordinary IPv4 office networking.",
+        "Every panel in a multi-panel site needs an SK-NIC network interface card.",
+        "Up to 32 panels can be in the network, and each one must have a unique panel ID.",
+        "IFP-2100, RFP-2100, IFP-300, and IFP-75 can be part of the same network family according to the course slides.",
+        "The RFP-2100 provides the power and point capacity of the 2100 platform without the onboard user interface, which is why it shows up as an expansion option in networked systems.",
+        "Networked panels can share a larger system while still being organized into sites so events from one site are isolated from another when required.",
+        "The notes called out that ACK, DRILL, RESET, and F-macro keys are disabled until a multi-site user logs in and selects a site.",
+        "Copper or fiber can be used through the SK-NIC depending on the hardware path, with the notes specifically calling out twisted pair and fiber optic variants.",
+        "A to A and B to B matters when wiring the copper path between NIC ports.",
+        "Networking work should start with powered-down panels, correct panel IDs, NIC installation, wiring, then panel power-up and Learn Network/member configuration in the menu flow.",
+        "Matching firmware across networked panels matters. Do not treat that as optional."
+      ],
+      "flashcards": [
+        {"q": "What hardware is required to network Farenhyt panels together?", "a": "An SK-NIC in each participating panel."},
+        {"q": "How many panels can be in one default network?", "a": "Up to 32 panels."},
+        {"q": "What is the easiest way to describe the RFP-2100?", "a": "A network-capable 2100-class panel without the built-in user interface."},
+        {"q": "What does the course mean by networking?", "a": "Panel-to-panel Farenhyt networking, not normal office IP networking."}
+      ],
+      "examQuestions": [
+        {
+          "q": "Which statement is correct for a Farenhyt panel network?",
+          "choices": [
+            "Only one panel needs an SK-NIC.",
+            "Each panel must have a unique panel ID.",
+            "All panels must be the exact same model.",
+            "Networking requires ECS hardware."
+          ],
+          "answer": 1,
+          "explanation": "The course slides and notes both stressed unique panel IDs on every panel in the network."
+        },
+        {
+          "q": "What is the most accurate description of RFP-2100 in a networked system?",
+          "choices": [
+            "A non-addressable repeater panel.",
+            "A 2100 platform without a display/interface used to add capacity.",
+            "A software-only virtual panel.",
+            "A dedicated voice controller."
+          ],
+          "answer": 1,
+          "explanation": "The networking material described RFP-2100 as providing 2100-class capacity without an onboard user interface."
+        }
+      ],
+      "workflows": [
+        {
+          "title": "Basic panel networking sequence",
+          "steps": [
+            "Power down all panels being networked.",
+            "Set each panel ID appropriately and install the SK-NIC hardware.",
+            "Wire the network path correctly between panels or media converters.",
+            "Power up the panels and verify firmware compatibility.",
+            "Use the network programming flow to learn the network and adjust member/site settings as needed."
+          ]
+        }
+      ],
+      "labChecklist": [
+        "Verify unique IDs before trying to learn the network.",
+        "Verify same firmware family on all networked panels.",
+        "Confirm the chosen media path: twisted pair, multi-mode fiber, or single-mode fiber as applicable.",
+        "After hardware changes, review the network programming menu and then re-pull the configuration."
+      ],
+      "commonMistakes": [
+        "Thinking network means general IT networking and overlooking the SK-NIC requirement.",
+        "Reusing a panel ID that already exists elsewhere on the network.",
+        "Forgetting that some user actions are site-dependent until the operator selects the active site."
+      ],
+      "troubleshooting": [
+        "Start with IDs, firmware match, NIC installation, and wiring polarity before assuming the software is the problem.",
+        "If a site behaves independently, confirm whether that is the intended site isolation design rather than a failure."
+      ],
+      "quickReference": [
+        "Up to 32 panels can be networked in the default design described in the slides and manuals.",
+        "SK-NIC is the required network interface card for these panels.",
+        "A multi-site annunciator can be used when events from separate sites still need to be viewed centrally."
+      ],
+      "terms": [
+        {"term": "SK-NIC", "definition": "The Farenhyt network interface card used to network compatible panels."},
+        {"term": "Site", "definition": "A logical partition inside a network that can isolate events and operator control behavior."},
+        {"term": "RFP-2100", "definition": "A 2100-class panel variant used to add networked point/power capacity without a built-in display."}
+      ],
+      "keywords": ["SK-NIC", "panel ID", "site", "RFP-2100", "32 panels", "fiber", "twisted pair"],
+      "sources": [
+        "Instructor Led Sections/Networking/SELF NOTES/General notes.txt",
+        "Instructor Led Sections/Networking/Transcripts/*.txt",
+        "Instructor Led Sections/Networking/Covered Slides/6-Networking Presentation.pdf",
+        "Data Sheets/SBUS/351622_SK-NIC.pdf"
+      ]
+    },
+    {
+      "id": "ecs",
+      "title": "ECS and voice platform overview",
+      "shortTitle": "ECS",
+      "badge": "Day 3 reference",
+      "theme": "red",
+      "summary": "The provided material had very little note-level ECS commentary, so this section leans more heavily on the covered manuals and datasheets. It is framed as a product and workflow reference rather than a step-by-step field programming guide.",
+      "keynotes": [
+        "IFP-2100ECS and IFP-300ECS are addressable fire alarm control panels with ECS capability when the emergency communication features are enabled.",
+        "The 2100ECS platform supports larger point counts and higher ECS expansion capacity than the 300ECS platform, which is the smaller-capacity option.",
+        "Both ECS-capable panels can be networked using SK-NIC hardware and are described with support for up to 32 sites/panels in their product literature.",
+        "The 2100ECS documentation references support for combinations of ECS-50W, ECS-125W, ECS-INT50W, and ECS-DUAL50W amplifiers for a much larger overall system wattage ceiling.",
+        "The 300ECS documentation references the same amplifier family but at a smaller overall expansion scale than the 2100ECS.",
+        "The product references repeatedly name ECS-NVCM as the Network Voice Control Module and ECS-LOC as the Local Operator Console family.",
+        "ECS product selection matters because system scale, speaker circuit count, amplifier quantity, and voice/network architecture differ between models.",
+        "Use the ECS manuals for exact installation, amplifier, speaker, and module wiring decisions rather than relying on memory from class."
+      ],
+      "flashcards": [
+        {"q": "Which ECS panel is the higher-capacity platform in this course material?", "a": "IFP-2100ECS."},
+        {"q": "What does ECS-NVCM stand for?", "a": "Network Voice Control Module."},
+        {"q": "What does ECS-LOC stand for?", "a": "Local Operator Console."},
+        {"q": "Why should ECS model choice be reviewed early?", "a": "Because the panel platform affects point capacity, amplifier scale, and voice expansion options."}
+      ],
+      "examQuestions": [
+        {
+          "q": "Which source should be treated as the best authority for exact ECS installation and wiring detail?",
+          "choices": [
+            "Transcript snippets alone",
+            "A remembered classroom demo",
+            "The ECS and panel installation manuals",
+            "Only the quick-reference study cards"
+          ],
+          "answer": 2,
+          "explanation": "The ECS section in this project is intentionally more cautious because the available high-signal notes were limited; the manuals are the right final authority for exact details."
+        }
+      ],
+      "workflows": [
+        {
+          "title": "ECS planning questions before programming",
+          "steps": [
+            "Confirm whether the job is on 2100ECS or 300ECS.",
+            "Confirm the required amplifier family and total speaker load.",
+            "Confirm whether network voice control or local operator consoles are part of the design.",
+            "Use the installation manual for the exact hardware and wiring path before field programming."
+          ]
+        }
+      ],
+      "labChecklist": [
+        "Confirm the panel family before selecting ECS hardware assumptions.",
+        "Cross-check amplifier and speaker circuit limits in the manual, not from memory.",
+        "Check whether the job includes ECS-NVCM, ECS-RVM, or ECS-LOC-related devices."
+      ],
+      "commonMistakes": [
+        "Treating 2100ECS and 300ECS as interchangeable when their overall scale is different.",
+        "Using voice hardware names loosely instead of confirming the exact module family in the design documents."
+      ],
+      "troubleshooting": [
+        "If ECS behavior seems inconsistent, verify the exact amplifier and voice-module family in the program and hardware bill first.",
+        "When in doubt, return to the panel-specific ECS manual because the installation details are model dependent."
+      ],
+      "quickReference": [
+        "ECS-NVCM = Network Voice Control Module.",
+        "ECS-LOC = Local Operator Console.",
+        "Amplifier families repeatedly referenced: ECS-50W, ECS-125W, ECS-INT50W, ECS-DUAL50W."
+      ],
+      "terms": [
+        {"term": "ECS", "definition": "Emergency Communication System capability integrated with the Farenhyt fire platform."},
+        {"term": "ECS-NVCM", "definition": "Network Voice Control Module used in ECS architectures."},
+        {"term": "ECS-LOC", "definition": "Local Operator Console used with ECS systems."}
+      ],
+      "keywords": ["IFP-2100ECS", "IFP-300ECS", "ECS-NVCM", "ECS-LOC", "ECS-50W", "ECS-INT50W"],
+      "sources": [
+        "Data Sheets/ECS Data Sheets/351600_IFP-2100ECS.pdf",
+        "Data Sheets/ECS Data Sheets/351604_IFP-300ECS.pdf",
+        "Data Sheets/ECS Data Sheets/350980-Internal 50W.pdf",
+        "Manuals/LS10143-001SK-E_IFP-2100ECS.pdf",
+        "Manuals/LS10145-001SK-E_IFP-300ECS.pdf",
+        "Manuals/151455_ECS.pdf"
+      ]
+    },
+    {
+      "id": "product-reference",
+      "title": "Panel and hardware quick reference",
+      "shortTitle": "REF",
+      "badge": "Cross-course",
+      "theme": "red",
+      "summary": "This section condenses the most useful product-level references that appeared in datasheets and manuals so the search experience has structured product facts instead of relying only on visible HTML or memory.",
+      "keynotes": [
+        "The IFP-2100 family starts with one built-in SLC and can scale much higher in total point capacity than the IFP-300 family.",
+        "The 2100 family includes eight onboard Flexput circuits that can be configured for auxiliary power, notification outputs, or conventional detector inputs.",
+        "Both IFP-2100 and IFP-300 literature reference built-in communication options such as dual phone line DACT with IP or optional cellular paths depending on the configuration.",
+        "The 6815 expands SLC capacity for IDP/SK devices on supported panels.",
+        "The 5815XL is the SD-device-oriented SLC expansion path mentioned in the panel datasheets.",
+        "RA-2000 is repeatedly referenced as a recommended annunciator option in the course notes and product family literature.",
+        "SK-NIC is the network card you need for multi-panel interconnection."
+      ],
+      "flashcards": [
+        {"q": "What is the purpose of the 6815?", "a": "It is an SLC expander for supported Farenhyt panels using IDP/SK devices."},
+        {"q": "What hardware handles panel networking?", "a": "SK-NIC."},
+        {"q": "What type of device is RA-2000?", "a": "A remote annunciator used with the panel family."}
+      ],
+      "examQuestions": [
+        {
+          "q": "Which item is an SLC expansion product rather than a network card?",
+          "choices": ["SK-NIC", "6815", "ECS-NVCM", "RA-2000"],
+          "answer": 1,
+          "explanation": "6815 is the SLC expansion board/product; SK-NIC is the network interface card."
+        }
+      ],
+      "workflows": [
+        {
+          "title": "Quick hardware identification",
+          "steps": [
+            "Identify the base panel family first: 2100, 300, or ECS variant.",
+            "Identify whether the accessory is adding SLC capacity, annunciation, networking, or ECS voice capability.",
+            "Use the datasheet/manual for exact compatibility and capacity confirmation."
+          ]
+        }
+      ],
+      "labChecklist": [
+        "Confirm whether the SLC expansion path is 6815 or 5815XL based on device family.",
+        "Confirm whether the job needs RA-series annunciation or full network visibility.",
+        "Confirm whether networking requires SK-NIC or whether the panel is standalone."
+      ],
+      "commonMistakes": [
+        "Confusing SLC expansion hardware with networking hardware.",
+        "Assuming model families share the same point ceilings without checking the datasheet."
+      ],
+      "troubleshooting": [
+        "When a hardware assumption looks wrong in software, verify the exact model number first.",
+        "Use datasheet model names when talking to support so point-capacity and compatibility discussions stay precise."
+      ],
+      "quickReference": [
+        "6815 = SLC expander for IDP/SK devices on supported panels.",
+        "5815XL = SLC expander path for SD devices.",
+        "SK-NIC = network interface card.",
+        "RA-2000 = remote annunciator family reference from course material."
+      ],
+      "terms": [
+        {"term": "6815", "definition": "An SLC expander used to increase addressable capacity for IDP/SK device loops on supported panels."},
+        {"term": "5815XL", "definition": "An SLC expander path used for SD device support on supported panels."},
+        {"term": "RA-2000", "definition": "A remote annunciator option referenced in the Farenhyt family."}
+      ],
+      "keywords": ["IFP-2100", "IFP-300", "6815", "5815XL", "SK-NIC", "RA-2000", "Flexput"],
+      "sources": [
+        "Data Sheets/Addressable Panels/351602_IFP-2100.pdf",
+        "Data Sheets/Addressable Panels/IFP300_Datasheet.pdf",
+        "Data Sheets/SBUS/351620_Farenhyt 6815.pdf",
+        "Data Sheets/SBUS/351622_SK-NIC.pdf",
+        "Data Sheets/SBUS/RA2000spec.pdf"
+      ]
+    },
+    {
+      "id": "certification",
+      "title": "Certification prep and study strategy",
+      "shortTitle": "CERT",
+      "badge": "All days",
+      "theme": "blue",
+      "summary": "This is the study-focused layer drawn from repeated instructor emphasis and the project brief: prepare for practical labs and for a separate multiple-choice final without pretending every feature is equally likely to be tested.",
+      "keynotes": [
+        "The instructor repeatedly emphasized mastering the basics first: points, zones, groups, mapping, and safe program transfer workflow.",
+        "For lab success, think in action-reaction chains: device type -> point -> zone -> mapping -> output group -> pattern/behavior.",
+        "For the exam, expect questions that test differences between similar ideas, such as keypad vs HFSS capability or pre-V7 vs V7+ behavior.",
+        "Many product names matter less than understanding what role each item plays in the system.",
+        "The safest test strategy is to eliminate answers that confuse zones with groups, networking with SLC expansion, or upload with download."
+      ],
+      "flashcards": [
+        {"q": "What concept chain should you be able to explain for lab prep?", "a": "Point -> zone -> mapping -> output group -> output behavior."},
+        {"q": "What kind of difference is frequently testable?", "a": "Two similar workflows that differ in one key step, such as pre-V7 vs V7+ defaulting."},
+        {"q": "What is the safest answer pattern to avoid?", "a": "Any answer that swaps inputs and outputs or swaps upload and download language."}
+      ],
+      "examQuestions": [
+        {
+          "q": "What study approach best matches the instructor guidance?",
+          "choices": [
+            "Memorize obscure options first.",
+            "Master the basics before the niche settings.",
+            "Ignore mapping because it is too advanced.",
+            "Focus only on datasheet numbers."
+          ],
+          "answer": 1,
+          "explanation": "The instructor directly advised students to lock in the basic workflows first and treat advanced/special-use settings as secondary."
+        }
+      ],
+      "workflows": [
+        {
+          "title": "Night-before review plan",
+          "steps": [
+            "Review the overview cards and top quick-reference items.",
+            "Drill flashcards for keypad, HFSS, and networking differences.",
+            "Work the practice questions and read the explanations, especially on wrong answers.",
+            "Use deep search for any term or model you still cannot place confidently."
+          ]
+        }
+      ],
+      "labChecklist": [
+        "Know what you can do at the annunciator versus what requires HFSS.",
+        "Be able to explain a clean upload/download workflow without mixing the terms.",
+        "Know the common product roles: panel, annunciator, NIC, SLC expander, ECS modules."
+      ],
+      "commonMistakes": [
+        "Trying to memorize only isolated facts without understanding the system flow.",
+        "Ignoring explanations on missed practice questions instead of learning the pattern behind the mistake."
+      ],
+      "troubleshooting": [
+        "If you miss several questions on one topic, use search to pull both clean study notes and deep source excerpts for that concept.",
+        "Rehearse the exact order of key workflows out loud because many errors come from swapping two adjacent steps."
+      ],
+      "quickReference": [
+        "Most exam-like topics in this project: defaulting, password rules, JumpStart, zones vs groups, HFSS transfer direction, SK-NIC networking basics.",
+        "Most lab-critical habits in this project: pull current config first, verify queue, document macros, verify mapping behavior intentionally."
+      ],
+      "terms": [
+        {"term": "Deep search", "definition": "Search mode that looks into the broader source-text dataset, including transcripts and manual excerpts."},
+        {"term": "Default search", "definition": "Search mode that prioritizes cleaned study-guide content from data.json."}
+      ],
+      "keywords": ["exam prep", "labs", "practice test", "deep search", "workflow", "common mistakes"],
+      "sources": [
+        "Project brief in LLM_INSTRUCTIONS.md",
+        "Instructor emphasis captured in programming and HFSS transcripts"
+      ]
+    }
+  ]
+}
